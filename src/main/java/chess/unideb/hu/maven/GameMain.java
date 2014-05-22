@@ -6,11 +6,22 @@ import javax.swing.SwingUtilities;
 
 import org.slf4j.*;
 
-
+/**
+ * 
+ * @author gergo0720
+ * Main class of the game.
+ */
 public class GameMain {
 
+	/**
+	 * Logger to debug, log information and warnings.
+	 */
 	private static Logger logger = LoggerFactory.getLogger(GameMain.class);
 	
+	/**
+	 * Main method, create the base xml file and waiting two players.
+	 * @param args is program parameter, it is not needed now.
+	 */
 	public static void main(String[] args) {
 		saveXml.dir = new File("SavedGames");
 		if(!saveXml.dir.exists()) {

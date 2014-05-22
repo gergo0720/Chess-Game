@@ -6,37 +6,92 @@ import javax.swing.JButton;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
+/**
+ * 
+ * @author gergo0720
+ * Class of King
+ */
 public class King {
+	
+	/**
+	 * Logger to debug, log information and warnings.
+	 */
 	private static Logger logger = LoggerFactory.getLogger(King.class);
+	
+	/**
+	 * 8x8 matrices, contains blocks for light king.
+	 */
 	private static boolean[] isDark = new boolean[8];
+	
+	/**
+	 * 8x8 matrices, contains blocks for dark king.
+	 */
 	private static boolean[] isLight = new boolean[8];
+	
+	/**
+	 * 8x8 matrices, contains block for kings.
+	 */
 	private static boolean[] isOkay = new boolean[8];
+	
+	/**
+	 * The name of the piece that should be moved.
+	 */
 	private static String newPiece;
+	
+	/**
+	 * The type of the piece that should be moved.
+	 */
 	private static String newType;
+	
+	/**
+	 * The previous row position of the piece that should be moved.
+	 */
 	private static int oldPosRow;
+	
+	/**
+	 * The previous column position of the piece that should be moved.
+	 */
 	private static int oldPosCol;
+	
+	/**
+	 * The number of the moves of the light king.
+	 */
 	private static int moveCounterLight = 0;
+	
+	/**
+	 * The number of the moves of the dark king.
+	 */
 	private static int moveCounterDark = 0;
 	
+	/**
+	 * Get the number of the moves of the light king.
+	 * @return the number of the taken moves.
+	 */
 	public static int getMoveCounterLight() {
 		return moveCounterLight;
 	}
 
-	public static void setMoveCounterLight(int moveCounterLight) {
-		King.moveCounterLight = moveCounterLight;
-	}
-
+	/**
+	 * Get the number of the moves of dark king.
+	 * @return the number of the taken moves.
+	 */
 	public static int getMoveCounterDark() {
 		return moveCounterDark;
 	}
-
-	public static void setMoveCounterDark(int moveCounterDark) {
-		King.moveCounterDark = moveCounterDark;
-	}
-
+	
+	/**
+	 * 8x8 matrices that contains the possible moves of the king.
+	 */
 	private static boolean[][] possibleMoves = new boolean[8][8];
+	
+	/**
+	 * 8x8 matrices that contains all the possible place where king can be given chess from.
+	 */
 	private static boolean[][] possibleChess = new boolean[8][8];
+	
+	/**
+	 * The operators to determine the possible moves of the king.
+	 */
 	private static Integer move[][][] = 
 	{
 		{
@@ -51,6 +106,9 @@ public class King {
 		}
 	};
 	
+	/**
+	 * The operators to determine the possible chess except for knight.
+	 */
 	private static Integer isChess[][][] = {
 		{ { 1, 1 }, { 1, 0 }, { -1, 1 }, { -1, 0 }, { -1, -1 }, { 0, -1 },
 			{ 1, -1 }, { 0, 1 } },
@@ -69,15 +127,28 @@ public class King {
 		{ { 8, 8 }, { 8, 0 }, { -8, 8 }, { -8, 0 }, { -8, -8 }, { 0, -8 },
 				{ 8, -8 }, { 0, 8 } }};
 	
+	/**
+	 * The operators to determine the possible chess by the knight.
+	 */
 	private static Integer isChess2[][][] = {
 		{ { 2, 1 }, { 2, -1 }, { -2, 1 },
 			{ -2, -1 }, { 1, 2 }, { 1, -2 }, { -1, 2 }, { -1, -2 }  }
 	};
 	
+	/**
+	 * Constructor of King.
+	 */
 	public King(){
 		
 	}
 	
+	/**
+	 * Examine what piece are around the king and fill {@code possibleMoves} accordingly.
+	 * @param currPosRow is the row position of the piece before move.
+	 * @param currPosCol is the column position of the piece before move.
+	 * @param chessSquare is the matrices of the chess board
+	 * @param player is which player is active, it is need to know to determine which king is active.
+	 */
 	static void moves(int currPosRow, int currPosCol, JButton[][] chessSquare, boolean player){
 		inits();
 			
@@ -136,7 +207,13 @@ public class King {
 		}
 	}
 	
-	
+	/**
+	 * Examine the king's current position and set up the {@code possibleChess} matrices with the possible places where king can be given chess from.
+	 * @param currPosRow is the row position of the piece before move.
+	 * @param currPosCol is the column position of the piece before move.
+	 * @param chessSquare is the matrices of the chess board.
+	 * @param player is which player is active, it is need to know to determine which king is active.
+	 */
 	static void chess(int currPosRow, int currPosCol, JButton[][] chessSquare, boolean player){
 		inits();
 		for(int i = 0; i < 1; i++) {
@@ -195,6 +272,11 @@ public class King {
 		}
 	}
 	
+	/**
+	 * Grab the piece, {@code newPiece} and {@code newType} are set with the information of the piece, and store the previous position before move.
+	 * @param i is the previous row position of the piece.
+	 * @param j is the previous column position of the piece.
+	 */
 	public static void grabPiece(int i, int j) {
 		logger.info("Number of King's possible moves: " + King.getNumberOfMoves(King.getPossibleMoves()));
 		GUIchess.drawPossibleMoves(possibleMoves, GUIchess.getChessSquare());
@@ -204,6 +286,12 @@ public class King {
 		oldPosCol = ChessPiece.chessPiecesPositions[i][j][1];
 	}
 
+	/**
+	 * Place the piece to the new place.
+	 * @param i is the row position where piece should be placed.
+	 * @param j is the column position where piece should be placed.
+	 * @param chessSquare is the matrices of the chess board.
+	 */
 	public static void placePiece(int i, int j, JButton[][] chessSquare) {
 		try {	
 			if(possibleMoves[i][j]) {
@@ -370,7 +458,9 @@ public class King {
 		}
 	}
 
-
+	/**
+	 * Initialize all the matrices and arrays, {@code possibleMoves}, {@code possibleChess}, {@code isOkay}, {@code isDark} and {@code isLight}.
+	 */
 	private static void inits() {
 		for(int i = 0; i < possibleMoves.length; i++){
 			for(int j = 0; j < possibleMoves.length; j++){
@@ -394,15 +484,27 @@ public class King {
 		
 	}
 	
-	
+	/**
+	 * Get the piece all the possible moves.
+	 * @return all the possible moves.
+	 */
 	public static boolean[][] getPossibleMoves() {
 		return possibleMoves;
 	}
 
+	/**
+	 * Get the piece all the possible places where it can be given chess from.
+	 * @return all the places where it can be given a chess from.
+	 */
 	public static boolean[][] getPossibleChess() {
 		return possibleChess;
 	}
 	
+	/**
+	 * Compute the number of the piece's possible moves.
+	 * @param pM is the matrices, which contains the possible moves.
+	 * @return the number of piece's possible moves.
+	 */
 	public static int getNumberOfMoves(boolean[][] pM) {
 		int counter = 0;
 		for(int i = 0; i < pM.length; i++) {
@@ -413,16 +515,4 @@ public class King {
 		}
 		return counter;
 	}
-	
-	public static int reduceNumberOfMoves(boolean[][] pM) {
-		int counter = 0;
-		for(int i = 0; i < pM.length; i++) {
-			for(int j = 0; j < pM.length; j++) {
-				if(pM[i][j] == true)
-					counter++;
-			}
-		}
-		return counter;
-	}
-	
 } 
