@@ -19,17 +19,17 @@ public class King {
 	private static Logger logger = LoggerFactory.getLogger(King.class);
 	
 	/**
-	 * 8x8 matrices, contains blocks for light king.
+	 * An array to contain blocks for light king.
 	 */
 	private static boolean[] isDark = new boolean[8];
 	
 	/**
-	 * 8x8 matrices, contains blocks for dark king.
+	 * An array to contain blocks for dark king.
 	 */
 	private static boolean[] isLight = new boolean[8];
 	
 	/**
-	 * 8x8 matrices, contains block for kings.
+	 * An array to contain block for kings.
 	 */
 	private static boolean[] isOkay = new boolean[8];
 	
@@ -291,6 +291,8 @@ public class King {
 
 	/**
 	 * Place the piece to the new place.
+	 * Set the piece icons on the chess board.
+	 * Change the active player if the move was valid.
 	 * @param i is the row position where piece should be placed.
 	 * @param j is the column position where piece should be placed.
 	 * @param chessSquare is the matrices of the chess board.
@@ -489,7 +491,7 @@ public class King {
 	}
 	
 	/**
-	 * Get the piece all the possible moves.
+	 * Get the all the possible moves.
 	 * @return all the possible moves.
 	 */
 	public static boolean[][] getPossibleMoves() {

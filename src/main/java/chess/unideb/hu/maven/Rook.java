@@ -19,17 +19,17 @@ public class Rook {
 	private static Logger logger = LoggerFactory.getLogger(Rook.class);
 	
 	/**
-	 * 8x8 matrices, contains blocks for light rook.
+	 * An array to contain blocks for light rook.
 	 */
 	private static boolean[] isOkay = new boolean[4];
 	
 	/**
-	 * 8x8 matrices, contains blocks for dark rook.
+	 * An array to contain blocks for dark rook.
 	 */
 	private static boolean[] isLight = new boolean[4];
 	
 	/**
-	 * 8x8 matrices contains blocks for rook.
+	 * An array to contain blocks for rook.
 	 */
 	private static boolean[] isDark = new boolean[4];
 	
@@ -236,6 +236,8 @@ public class Rook {
 	
 	/**
 	 * Place the piece to the new place.
+	 * Set the piece icons on the chess board.
+	 * Change the active player if the move was valid.
 	 * @param i is the row position where piece should be placed.
 	 * @param j is the column position where piece should be placed.
 	 * @param chessSquare is the matrices of the chess board.
@@ -313,7 +315,7 @@ public class Rook {
 	}
 	
 	/**
-	 * Get the piece all the possible moves.
+	 * Get the all the possible moves.
 	 * @return all the possible moves.
 	 */
 	public static boolean[][] getPossibleMoves() {

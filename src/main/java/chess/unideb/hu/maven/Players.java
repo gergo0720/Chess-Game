@@ -12,35 +12,103 @@ import javax.swing.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
+/**
+ * 
+ * @author gergo0720
+ * Class of Players.
+ */
 public class Players extends JFrame implements ActionListener{
 
 	/**
-	 * 
+	 * serialVersionUID.
 	 */
 	private static final long serialVersionUID = 1L;
 
+	/**
+	 * Logger to debug, log information and warnings.
+	 */
 	private static Logger logger = LoggerFactory.getLogger(Players.class);
 	
+	/**
+	 * Button to finish entering player names.
+	 */
 	protected JButton okButton;
+	
+	/**
+	 * Textfield for the name of the light player.
+	 */
 	private JTextField userNameField;
+	
+	/**
+	 * Textfield for the name of the dark player.
+	 */
 	private JTextField userNameField2;
+	
+	/**
+	 * Label to players' name.
+	 */
 	private JLabel info;
+	
+	/**
+	 * Label to light player's name.
+	 */
 	private JLabel userNameLabel;
+	
+	/**
+	 * Label to dark player's name.
+	 */
 	private JLabel userNameLabel2;
+	
+	/**
+	 * Layout for pop up window.
+	 */
 	private GridBagLayout textFieldPanelLayout;
+	
+	/**
+	 * Layout for pop up window.
+	 */
 	private GridBagLayout buttonPanelLayout;
+	
+	/**
+	 * Set constraints for {@code buttonPanelLayout}.
+	 */
 	private GridBagConstraints gbc;
+	
+	/**
+	 * Panel for textfields.
+	 */
 	private JPanel textFieldPanel;
+	
+	/**
+	 * Panel for button.
+	 */
 	private JPanel buttonPanel;
-	private static String userName = "Gerikee";
-	private static String userName2 = "Mateee";
+
+	/**
+	 * It shows the game can start or not.
+	 */
     private boolean isOkay = true;
 	
+    /**
+     * Name of the light player.
+     */
+    private static String userName;
+    
+    /**
+     * Name of the dark player.
+     */
+    private static String userName2;
+    
+    /**
+     * Constructor of Players.
+     */
     public Players(){
     	initPlayers();
 	}
 	
+    /**
+     * Initialize the welcome pop up window.
+     */
 	private void initPlayers() {
 		setBounds(500,500,400,200);
 		setLocationRelativeTo(null);
@@ -101,23 +169,42 @@ public class Players extends JFrame implements ActionListener{
 		setVisible(true);
 	}
 
-	
+	/**
+	 * Get the name of the light player.
+	 * @return light player's name.
+	 */
 	public static String getUserName(){
 		return userName;
 	}
+	
+	/**
+	 * Get the name of the dark player.
+	 * @return dark player's name.
+	 */
 	public static String getUserName2(){
 		return userName2;
 	}
 	
+	/**
+	 * Check textfields are filled or empty.
+	 * @return true if they are filled, false they are empty.
+	 */
 	public boolean getIsOkay(){
 		return isOkay;
 	}
 	
+	/**
+	 * Set textfields are filled or they are empty.
+	 * @param is tells textfields are filled or empty.
+	 */
 	public void setIsOkay(boolean is){
 		isOkay = is;
 	}
 	
-
+	/**
+	 * Handling the button press. If it is pressed the game will start.
+	 * @param e event handling.
+	 */
 	public void actionPerformed(ActionEvent e){
 		JFrame frame = new JFrame();
 		if(e.getSource() == okButton)
