@@ -1,4 +1,4 @@
-Chess-Game
+Sakk
 ==========
 
-Chess game project
+Kétszemélyes sakk játék ugyanazon a gépen.
