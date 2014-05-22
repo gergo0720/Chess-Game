@@ -8,22 +8,37 @@ import javax.swing.JButton;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
+/**
+ * 
+ * @author gergo0720
+ * Class of the game logic
+ */
 public class Game {
-	private static Logger logger = LoggerFactory.getLogger(Game.class);
-	private static boolean player; //Light - true, Dark - false
-	private static String activePlayer;
-	private static boolean isChess = false;
-	private static int tries = 0;
 	
-	public static int getTries() {
-		return tries;
-	}
-
-	public static void setTries(int tries) {
-		Game.tries = tries;
-	}
-
+	/**
+	 * Logger to debug, log information and warnings.
+	 */
+	private static Logger logger = LoggerFactory.getLogger(Game.class);
+	
+	/**
+	 * Active player.
+	 */
+	private static boolean player; //Light - true, Dark - false
+	
+	/**
+	 * Active player's name.
+	 */
+	private static String activePlayer;
+	
+	/**
+	 * Sign to know if it is chess.
+	 */
+	private static boolean chess = false;
+	
+	/**
+	 * Constructor of Game logic, set up piece vectors.
+	 * @param fileName is the input file.
+	 */
 	public Game(String fileName) {
 		new ChessPiece(fileName);
 		saveXml.chessPiecesDark = new Vector<String>();
@@ -63,6 +78,11 @@ public class Game {
 		saveXml.chessPiecesLight.add("LightPawn1");
 	}
 	
+	/**
+	 * It is the controller of the moves of Pieces.
+	 * @param i is the row coordinate of piece.
+	 * @param j is the column coordinate of piece.
+	 */
 	static void setMoves(int i, int j) {
 		if(player) {
 			if (ChessPiece.chessPieces[i][j].toLowerCase().contains("lightrook")) {
@@ -108,31 +128,44 @@ public class Game {
 		
 	}
 	
-	
-	public static Logger getLogger() {
-		return logger;
-	}
-
-	public static void setLogger(Logger logger) {
-		Game.logger = logger;
-	}
-	
+	/**
+	 * Get who is active.
+	 * @return true if light is active, false if dark is active.
+	 */
 	public static boolean isPlayer() {
 		return player;
 	}
 
+	/**
+	 * Set who is active.
+	 * @param player is the active player.
+	 */
 	public static void setPlayer(boolean player) {
 		Game.player = player;
 	}
 	
+	/**
+	 * Get the active player name.
+	 * @return the name of the light player it {@code player} is true, else return with the name of the dark player.
+	 */
 	public static String getActivePlayer() {
 		return Game.activePlayer;
 	}
 	
+	/**
+	 * Set the name of the active player.
+	 * @param s is the name of the player.
+	 */
 	public static void setActivePlayer(String s) {
 		Game.activePlayer = s;
 	}
 
+	/**
+	 * It is the controller of grabbing pieces.
+	 * @param i is the row coordinate of piece.
+	 * @param j is the column coordinate of piece.
+	 * @param chessPieces is the name of the piece.
+	 */
 	public static void grabPieces(int i, int j, String chessPieces) {
 		new saveXml();
 		if(chessPieces.toLowerCase().contains("pawn"))	
@@ -150,6 +183,13 @@ public class Game {
 		
 	}
 
+	/**
+	 * It is the controller of placing pieces.
+	 * @param i is the row coordinate of the piece.
+	 * @param j is the column coordinate of the piece.
+	 * @param chessSquare is the matrices of the chess board.
+	 * @param chessPieces is the name of the piece.
+	 */
 	public static void placePieces(int i, int j, JButton[][] chessSquare, String chessPieces) {
 		if(chessPieces.toLowerCase().contains("pawn"))
 			Pawn.placePiece(i, j, chessSquare);
@@ -164,7 +204,6 @@ public class Game {
 		else if(chessPieces.toLowerCase().contains("rook"))
 			Rook.placePiece(i, j, chessSquare);
 		
-		logger.info(piecesDistance(getPosRow("LightQueen"), getPosCol("LightQueen"), getPosRow("DarkKing"), getPosCol("DarkKing")).toString());
 		logger.info("Distance between kings: "+kingDistance(getPosRow("LightKing"), getPosCol("LightKing"), getPosRow("DarkKing"), getPosCol("DarkKing")).toString());
 		if(kingDistance(getPosRow("LightKing"), getPosCol("LightKing"), getPosRow("DarkKing"), getPosCol("DarkKing")) == 1) {
 			chessSituation();
@@ -177,6 +216,9 @@ public class Game {
 	
 	}
 	
+	/**
+	 * If the king in chess and the player wants to move without interrupting the chess, the move will be unavailable.
+	 */
 	public static void chessSituation(){
 		GUIchess.removeIcons();
 		new ChessPiece(saveXml.getSavedFile());
@@ -189,6 +231,12 @@ public class Game {
 		setIsChess(false);
 	}
 
+	/**
+	 * It decides whether king is in chess or not, if the opponent piece can see the king, the king is in chess.
+	 * @param possibleChess is the possible moves of the kings.
+	 * @param chessSquare is the matrices of the chess board.
+	 * @param king is the name of the king.
+	 */
 	public static void isChess(boolean[][] possibleChess,
 			JButton[][] chessSquare, String king) {
 		for(int i = 0; i < possibleChess.length; i++) {
@@ -199,7 +247,7 @@ public class Game {
 						Pawn.moves(i, j, chessSquare, !Game.isPlayer());
 						if(kingVisible(Pawn.getPossibleMoves(), chessSquare,"DarkKing")) {
 							logger.info("Chess by " + ChessPiece.chessPieces[i][j]);
-							if(!canHitChessBy(i, j, chessSquare, ChessPiece.chessPieces[i][j]) && 
+							if(!canHitChessBy(i, j, chessSquare) && 
 									kingInChess(king, chessSquare))
 								logger.info("Game is Over");
 							chessSquare[i][j].setBackground(Color.BLUE);
@@ -208,7 +256,7 @@ public class Game {
 						Pawn.moves(i, j, chessSquare, Game.isPlayer());
 						if(kingVisible(Pawn.getPossibleMoves(), chessSquare,"DarkKing")) {
 							logger.info("Chess by " + ChessPiece.chessPieces[i][j]);
-							if(!canHitChessBy(i, j, chessSquare, ChessPiece.chessPieces[i][j])&& 
+							if(!canHitChessBy(i, j, chessSquare)&& 
 									kingInChess(king, chessSquare))
 								logger.info("Game is Over");
 							chessSquare[i][j].setBackground(Color.BLUE);
@@ -221,7 +269,7 @@ public class Game {
 						Knight.moves(i, j, chessSquare, !Game.isPlayer());
 						if(kingVisible(Knight.getPossibleMoves(), chessSquare,"DarkKing")) {
 							logger.info("Chess by " + ChessPiece.chessPieces[i][j]);
-							if(!canHitChessBy(i, j, chessSquare, ChessPiece.chessPieces[i][j])&& 
+							if(!canHitChessBy(i, j, chessSquare )&& 
 									kingInChess(king, chessSquare))
 								logger.info("Game is Over");
 							chessSquare[i][j].setBackground(Color.BLUE);
@@ -230,7 +278,7 @@ public class Game {
 						Knight.moves(i, j, chessSquare, Game.isPlayer());
 						if(kingVisible(Knight.getPossibleMoves(), chessSquare,"DarkKing")) {
 							logger.info("Chess by " + ChessPiece.chessPieces[i][j]);
-							if(!canHitChessBy(i, j, chessSquare, ChessPiece.chessPieces[i][j])&& 
+							if(!canHitChessBy(i, j, chessSquare)&& 
 									kingInChess(king, chessSquare))
 								logger.info("Game is Over");
 							chessSquare[i][j].setBackground(Color.BLUE);
@@ -244,7 +292,7 @@ public class Game {
 						if(kingVisible(Bishop.getPossibleMoves(), chessSquare,"DarkKing")) {
 							logger.info("Chess by " + ChessPiece.chessPieces[i][j]);
 							if(!canInterruptChess(i, j, chessSquare, getPosRow("DarkKing"), getPosCol("DarkKing")) &&
-									!canHitChessBy(i, j, chessSquare, ChessPiece.chessPieces[i][j])&& 
+									!canHitChessBy(i, j, chessSquare)&& 
 									kingInChess(king, chessSquare))
 								logger.info("Game is Over");
 							chessSquare[i][j].setBackground(Color.BLUE);
@@ -254,7 +302,7 @@ public class Game {
 						if(kingVisible(Bishop.getPossibleMoves(), chessSquare,"DarkKing")) {
 							logger.info("Chess by " + ChessPiece.chessPieces[i][j]);
 							if(!canInterruptChess(i, j, chessSquare, getPosRow("DarkKing"), getPosCol("DarkKing")) &&
-									!canHitChessBy(i, j, chessSquare, ChessPiece.chessPieces[i][j])&& 
+									!canHitChessBy(i, j, chessSquare)&& 
 									kingInChess(king, chessSquare))
 								logger.info("Game is Over");
 							chessSquare[i][j].setBackground(Color.BLUE);
@@ -268,7 +316,7 @@ public class Game {
 						if(kingVisible(Queen.getPossibleMoves(), chessSquare,"DarkKing")) {
 							logger.info("Chess by " + ChessPiece.chessPieces[i][j]);
 							if(!canInterruptChess(i, j, chessSquare, getPosRow("DarkKing"), getPosCol("DarkKing")) &&
-									!canHitChessBy(i, j, chessSquare, ChessPiece.chessPieces[i][j])&& 
+									!canHitChessBy(i, j, chessSquare)&& 
 									kingInChess(king, chessSquare))
 								logger.info("Game is Over");
 							chessSquare[i][j].setBackground(Color.BLUE);
@@ -278,7 +326,7 @@ public class Game {
 						if(kingVisible(Queen.getPossibleMoves(), chessSquare,"DarkKing")) {
 							logger.info("Chess by " + ChessPiece.chessPieces[i][j]);
 							if(!canInterruptChess(i, j, chessSquare, getPosRow("DarkKing"), getPosCol("DarkKing")) &&
-									!canHitChessBy(i, j, chessSquare, ChessPiece.chessPieces[i][j])&& 
+									!canHitChessBy(i, j, chessSquare)&& 
 									kingInChess(king, chessSquare))
 								logger.info("Game is Over");
 							chessSquare[i][j].setBackground(Color.BLUE);
@@ -292,7 +340,7 @@ public class Game {
 						if(kingVisible(Rook.getPossibleMoves(), chessSquare,"DarkKing")) {
 							logger.info("Chess by " + ChessPiece.chessPieces[i][j]);
 							if(!canInterruptChess(i, j, chessSquare, getPosRow("DarkKing"), getPosCol("DarkKing")) &&
-									!canHitChessBy(i, j, chessSquare, ChessPiece.chessPieces[i][j])&& 
+									!canHitChessBy(i, j, chessSquare)&& 
 									kingInChess(king, chessSquare))
 								logger.info("Game is Over");
 							chessSquare[i][j].setBackground(Color.BLUE);
@@ -302,7 +350,7 @@ public class Game {
 						if(kingVisible(Rook.getPossibleMoves(), chessSquare,"DarkKing")) {
 							logger.info("Chess by " + ChessPiece.chessPieces[i][j]);
 							if(!canInterruptChess(i, j, chessSquare, getPosRow("DarkKing"), getPosCol("DarkKing")) &&
-									!canHitChessBy(i, j, chessSquare, ChessPiece.chessPieces[i][j])&& 
+									!canHitChessBy(i, j, chessSquare)&& 
 									kingInChess(king, chessSquare))
 								logger.info("Game is Over");
 							chessSquare[i][j].setBackground(Color.BLUE);
@@ -317,7 +365,7 @@ public class Game {
 						Pawn.moves(i, j, chessSquare, !Game.isPlayer());
 						if(kingVisible(Pawn.getPossibleMoves(), chessSquare,"LightKing")) {
 							logger.info("Chess by " + ChessPiece.chessPieces[i][j]);
-							if(!canHitChessBy(i, j, chessSquare, ChessPiece.chessPieces[i][j])&& 
+							if(!canHitChessBy(i, j, chessSquare)&& 
 									kingInChess(king, chessSquare))
 								logger.info("Game is Over");
 							chessSquare[i][j].setBackground(Color.BLUE);
@@ -326,7 +374,7 @@ public class Game {
 						Pawn.moves(i, j, chessSquare, Game.isPlayer());
 						if(kingVisible(Pawn.getPossibleMoves(), chessSquare,"LightKing")) {
 							logger.info("Chess by " + ChessPiece.chessPieces[i][j]);
-							if(!canHitChessBy(i, j, chessSquare, ChessPiece.chessPieces[i][j])&& 
+							if(!canHitChessBy(i, j, chessSquare)&& 
 									kingInChess(king, chessSquare))
 								logger.info("Game is Over");
 							chessSquare[i][j].setBackground(Color.BLUE);
@@ -339,7 +387,7 @@ public class Game {
 						Knight.moves(i, j, chessSquare, !Game.isPlayer());
 						if(kingVisible(Knight.getPossibleMoves(), chessSquare,"LightKing")) {
 							logger.info("Chess by " + ChessPiece.chessPieces[i][j]);
-							if(!canHitChessBy(i, j, chessSquare, ChessPiece.chessPieces[i][j])&& 
+							if(!canHitChessBy(i, j, chessSquare)&& 
 									kingInChess(king, chessSquare))
 								logger.info("Game is Over");
 							chessSquare[i][j].setBackground(Color.BLUE);
@@ -348,7 +396,7 @@ public class Game {
 						Knight.moves(i, j, chessSquare, Game.isPlayer());
 						if(kingVisible(Knight.getPossibleMoves(), chessSquare,"LightKing")) {
 							logger.info("Chess by " + ChessPiece.chessPieces[i][j]);
-							if(!canHitChessBy(i, j, chessSquare, ChessPiece.chessPieces[i][j])&& 
+							if(!canHitChessBy(i, j, chessSquare)&& 
 									kingInChess(king, chessSquare))
 								logger.info("Game is Over");
 							chessSquare[i][j].setBackground(Color.BLUE);
@@ -362,7 +410,7 @@ public class Game {
 						if(kingVisible(Bishop.getPossibleMoves(), chessSquare,"LightKing")) {
 							logger.info("Chess by " + ChessPiece.chessPieces[i][j]);
 							if(!canInterruptChess(i, j, chessSquare, getPosRow("LightKing"), getPosCol("LightKing")) &&
-									!canHitChessBy(i, j, chessSquare, ChessPiece.chessPieces[i][j])&& 
+									!canHitChessBy(i, j, chessSquare)&& 
 									kingInChess(king, chessSquare))
 								logger.info("Game is Over");
 							chessSquare[i][j].setBackground(Color.BLUE);
@@ -372,7 +420,7 @@ public class Game {
 						if(kingVisible(Bishop.getPossibleMoves(), chessSquare,"LightKing")) {
 							logger.info("Chess by " + ChessPiece.chessPieces[i][j]);
 							if(!canInterruptChess(i, j, chessSquare, getPosRow("LightKing"), getPosCol("LightKing")) &&
-									!canHitChessBy(i, j, chessSquare, ChessPiece.chessPieces[i][j])&& 
+									!canHitChessBy(i, j, chessSquare)&& 
 									kingInChess(king, chessSquare))
 								logger.info("Game is Over");
 							chessSquare[i][j].setBackground(Color.BLUE);
@@ -386,7 +434,7 @@ public class Game {
 						if(kingVisible(Queen.getPossibleMoves(), chessSquare,"LightKing")) {
 							logger.info("Chess by " + ChessPiece.chessPieces[i][j]);
 							if(!canInterruptChess(i, j, chessSquare, getPosRow("LightKing"), getPosCol("LightKing")) &&
-									!canHitChessBy(i, j, chessSquare, ChessPiece.chessPieces[i][j])&& 
+									!canHitChessBy(i, j, chessSquare)&& 
 									kingInChess(king, chessSquare))
 								logger.info("Game is Over");
 							chessSquare[i][j].setBackground(Color.BLUE);
@@ -396,7 +444,7 @@ public class Game {
 						if(kingVisible(Queen.getPossibleMoves(), chessSquare,"LightKing")) {
 							logger.info("Chess by " + ChessPiece.chessPieces[i][j]);
 							if(!canInterruptChess(i, j, chessSquare, getPosRow("LightKing"), getPosCol("LightKing")) &&
-									!canHitChessBy(i, j, chessSquare, ChessPiece.chessPieces[i][j])&& 
+									!canHitChessBy(i, j, chessSquare)&& 
 									kingInChess(king, chessSquare))
 								logger.info("Game is Over");
 							chessSquare[i][j].setBackground(Color.BLUE);
@@ -410,7 +458,7 @@ public class Game {
 						if(kingVisible(Rook.getPossibleMoves(), chessSquare,"LightKing")) {
 							logger.info("Chess by " + ChessPiece.chessPieces[i][j]);
 							if(!canInterruptChess(i, j, chessSquare, getPosRow("LightKing"), getPosCol("LightKing")) &&
-									!canHitChessBy(i, j, chessSquare, ChessPiece.chessPieces[i][j])&& 
+									!canHitChessBy(i, j, chessSquare)&& 
 									kingInChess(king, chessSquare))
 								logger.info("Game is Over");
 							chessSquare[i][j].setBackground(Color.BLUE);
@@ -420,7 +468,7 @@ public class Game {
 						if(kingVisible(Rook.getPossibleMoves(), chessSquare, "LightKing")) {
 							logger.info("Chess by " + ChessPiece.chessPieces[i][j]);
 							if(!canInterruptChess(i, j, chessSquare, getPosRow("LightKing"), getPosCol("LightKing")) &&
-									!canHitChessBy(i, j, chessSquare, ChessPiece.chessPieces[i][j])&& 
+									!canHitChessBy(i, j, chessSquare)&& 
 									kingInChess(king, chessSquare))
 								logger.info("Game is Over");
 							chessSquare[i][j].setBackground(Color.BLUE);
@@ -434,6 +482,13 @@ public class Game {
 		}
 	}
 	
+	/**
+	 * If the chess piece can see the opponent king, set the chess square of the king red.
+	 * @param possibleMoves is the possible moves of the piece.
+	 * @param chessSquare is the matrices of chess board.
+	 * @param king is the name of the king.
+	 * @return true if piece can see the king or false if it is not.
+	 */
 	public static boolean kingVisible(boolean[][] possibleMoves,
 			JButton[][] chessSquare, String king) {
 		for(int i = 0; i < possibleMoves.length; i++) {
@@ -447,6 +502,14 @@ public class Game {
 		return false;
 	}
 	
+	/**
+	 * Set a matrices with true, but only between the chess giver and the king in chess.
+	 * @param r1 is the first row position.
+	 * @param c1 is the first column position.
+	 * @param r2 is the second row position.
+	 * @param c2 is the second column position.
+	 * @return the filled matrices
+	 */
 	public static boolean[][] setChessRoad(int r1, int c1, int r2, int c2) {
 		boolean[][] result = new boolean[8][8];
 		for(int i = 0; i < result.length; i++) {
@@ -505,7 +568,11 @@ public class Game {
 		return result;
 	}
 	
-	
+	/**
+	 * Get the row coordinate of the piece.
+	 * @param piece is the name of the piece
+	 * @return the row coordinate of the piece.
+	 */
 	public static int getPosRow(String piece) {
 		for(int i = 0; i < 8; i++) {
 			for(int j = 0; j < 8; j++) {
@@ -517,6 +584,11 @@ public class Game {
 		return -1;
 	}
 	
+	/**
+	 * Get the column coordinate of the piece.
+	 * @param piece is the name of the piece.
+	 * @return the column coordinate of the piece.
+	 */
 	public static int getPosCol(String piece) {
 		for(int i = 0; i < 8; i++) {
 			for(int j = 0; j < 8; j++) {
@@ -528,33 +600,46 @@ public class Game {
 		return -1;
 	}
 	
+	/**
+	 * Get whether it is chess.
+	 * @return chess true if it is chess, false if it is not.
+	 */
 	public static boolean getIsChess() {
-		return isChess;
+		return chess;
 	}
 	
+	/**
+	 * Set the message which player is in chess.
+	 * @param ischess is the sign there is chess or no.
+	 */
 	public static void setIsChess(boolean ischess) {
 		if(Game.isPlayer()) {
 			GUIchess.setLabelMessage(Players.getUserName() + " is in chess");
 		}
 		else
 			GUIchess.setLabelMessage(Players.getUserName2() + " is in chess");
-		Game.isChess = ischess;
+		Game.chess = ischess;
 	}
 	
+	/**
+	 * Compute the distance between the two kings.
+	 * @param k1r is the first king's row coordinate.
+	 * @param k1c is the first king's column coordinate.
+	 * @param k2r is the second king's row coordinate.
+	 * @param k2c is the second king's column coordinate
+	 * @return the distance between the two kings.
+	 */
 	public static Integer kingDistance(int k1r, int k1c , int k2r, int k2c) {
 		return (int) Math.sqrt((k1r-k2r)*(k1r-k2r) + (k1c-k2c)*(k1c-k2c));
 	}
+
 	
-	public static Integer piecesDistance(int k1r, int k1c , int k2r, int k2c) {
-		return (int) Math.sqrt((k1r-k2r)*(k1r-k2r) + (k1c-k2c)*(k1c-k2c));
-	}
-	
-	public static boolean closeEnough(int posr, int posc, int posr2, int posc2) {
-		if(piecesDistance(posr, posc, posr2, posc2) == 1)
-			return true;
-		return false;
-	}
-	
+	/**
+	 * Examine king in chess has any possible move or not.
+	 * @param king is the name of the king.
+	 * @param chessSquare is the matrices of the chess board.
+	 * @return true if king has possible move or false it it has not.
+	 */
 	public static boolean kingInChess(String king, JButton[][] chessSquare) {
 		boolean[][] pM2 = new boolean[8][8];
 		boolean[][] pM = new boolean[8][8];
@@ -564,7 +649,7 @@ public class Game {
 			King.moves(getPosRow(king), getPosCol(king), GUIchess.getChessSquare(), player);
 			pM2 = King.getPossibleMoves();
 			if(king.compareTo("DarkKing") == 0) {
-				if(isInBoard("LightRookRight", chessSquare)) {
+				if(isOnBoard("LightRookRight", chessSquare)) {
 					Rook.moves(getPosRow("LightRookRight"), getPosCol("LightRookRight"), chessSquare, player);
 					pM = Rook.getPossibleMoves();
 					for(int i = 0; i < pM.length; i++) {
@@ -583,7 +668,7 @@ public class Game {
 	
 				}
 				
-				if(isInBoard("LightRookLeft", chessSquare)) {
+				if(isOnBoard("LightRookLeft", chessSquare)) {
 					Rook.moves(getPosRow("LightRookLeft"), getPosCol("LightRookLeft"), chessSquare, player);
 					pM = Rook.getPossibleMoves();
 					for(int i = 0; i < pM.length; i++) {
@@ -601,7 +686,7 @@ public class Game {
 					}
 				}
 				
-				if(isInBoard("LightKnightRight", chessSquare)) {
+				if(isOnBoard("LightKnightRight", chessSquare)) {
 					Knight.moves(getPosRow("LightKnightRight"), getPosCol("LightKnightRight"), chessSquare, player);
 					pM = Knight.getPossibleMoves();
 					for(int i = 0; i < pM.length; i++) {
@@ -619,7 +704,7 @@ public class Game {
 					}
 				}
 				
-				if(isInBoard("LightKnightLeft", chessSquare)) {
+				if(isOnBoard("LightKnightLeft", chessSquare)) {
 					Knight.moves(getPosRow("LightKnightLeft"), getPosCol("LightKnightLeft"), chessSquare, player);
 					pM = Knight.getPossibleMoves();
 					for(int i = 0; i < pM.length; i++) {
@@ -637,7 +722,7 @@ public class Game {
 					}
 				}
 				
-				if(isInBoard("LightBishopRight", chessSquare)) {
+				if(isOnBoard("LightBishopRight", chessSquare)) {
 					Bishop.moves(getPosRow("LightBishopRight"), getPosCol("LightBishopRight"), chessSquare, player);
 					pM = Bishop.getPossibleMoves();
 					for(int i = 0; i < pM.length; i++) {
@@ -655,7 +740,7 @@ public class Game {
 					}
 				}
 				
-				if(isInBoard("LightBishopLeft", chessSquare)) {
+				if(isOnBoard("LightBishopLeft", chessSquare)) {
 					Bishop.moves(getPosRow("LightBishopLeft"), getPosCol("LightBishopLeft"), chessSquare, player);
 					pM = Bishop.getPossibleMoves();
 					for(int i = 0; i < pM.length; i++) {
@@ -673,7 +758,7 @@ public class Game {
 					}
 				}
 				
-				if(isInBoard("LightPawn1", chessSquare)) {
+				if(isOnBoard("LightPawn1", chessSquare)) {
 					Pawn.moves(getPosRow("LightPawn1"), getPosCol("LightPawn1"), chessSquare, player);
 					pM = Pawn.getPossibleMoves();
 					for(int i = 0; i < pM.length; i++) {
@@ -691,7 +776,7 @@ public class Game {
 					}
 				}
 				
-				if(isInBoard("LightPawn2", chessSquare)) {
+				if(isOnBoard("LightPawn2", chessSquare)) {
 					Pawn.moves(getPosRow("LightPawn2"), getPosCol("LightPawn2"), chessSquare, player);
 					pM = Pawn.getPossibleMoves();
 					for(int i = 0; i < pM.length; i++) {
@@ -709,7 +794,7 @@ public class Game {
 					}
 				}
 				
-				if(isInBoard("LightPawn3", chessSquare)) {
+				if(isOnBoard("LightPawn3", chessSquare)) {
 					Pawn.moves(getPosRow("LightPawn3"), getPosCol("LightPawn3"), chessSquare, player);
 					pM = Pawn.getPossibleMoves();
 					for(int i = 0; i < pM.length; i++) {
@@ -727,7 +812,7 @@ public class Game {
 					}
 				}
 				
-				if(isInBoard("LightPawn4", chessSquare)) {
+				if(isOnBoard("LightPawn4", chessSquare)) {
 					Pawn.moves(getPosRow("LightPawn4"), getPosCol("LightPawn4"), chessSquare, player);
 					pM = Pawn.getPossibleMoves();
 					for(int i = 0; i < pM.length; i++) {
@@ -745,7 +830,7 @@ public class Game {
 					}
 				}
 				
-				if(isInBoard("LightPawn5", chessSquare)) {
+				if(isOnBoard("LightPawn5", chessSquare)) {
 					Pawn.moves(getPosRow("LightPawn5"), getPosCol("LightPawn5"), chessSquare, player);
 					pM = Pawn.getPossibleMoves();
 					for(int i = 0; i < pM.length; i++) {
@@ -763,7 +848,7 @@ public class Game {
 					}
 				}
 				
-				if(isInBoard("LightPawn6", chessSquare)) {
+				if(isOnBoard("LightPawn6", chessSquare)) {
 					Pawn.moves(getPosRow("LightPawn6"), getPosCol("LightPawn6"), chessSquare, player);
 					pM = Pawn.getPossibleMoves();
 					
@@ -782,7 +867,7 @@ public class Game {
 					}
 				}
 				
-				if(isInBoard("LightPawn7", chessSquare)) {
+				if(isOnBoard("LightPawn7", chessSquare)) {
 					Pawn.moves(getPosRow("LightPawn7"), getPosCol("LightPawn7"), chessSquare, player);
 					pM = Pawn.getPossibleMoves();
 					for(int i = 0; i < pM.length; i++) {
@@ -800,7 +885,7 @@ public class Game {
 					}
 				}
 				
-				if(isInBoard("LightPawn8", chessSquare)) {
+				if(isOnBoard("LightPawn8", chessSquare)) {
 					Pawn.moves(getPosRow("LightPawn8"), getPosCol("LightPawn8"), chessSquare, player);
 					pM = Pawn.getPossibleMoves();
 					for(int i = 0; i < pM.length; i++) {
@@ -818,7 +903,7 @@ public class Game {
 					}
 				}
 				
-				if(isInBoard("LightQueen", chessSquare)) {
+				if(isOnBoard("LightQueen", chessSquare)) {
 					Queen.moves(getPosRow("LightQueen"), getPosCol("LightQueen"), chessSquare, player);
 					pM = Queen.getPossibleMoves();
 					for(int i = 0; i < pM.length; i++) {
@@ -853,7 +938,7 @@ public class Game {
 			King.moves(getPosRow(king), getPosCol(king), GUIchess.getChessSquare(), player);
 			pM2 = King.getPossibleMoves();
 			if(king.compareTo("LightKing") == 0) {
-				if(isInBoard("DarkRookRight", chessSquare)) {
+				if(isOnBoard("DarkRookRight", chessSquare)) {
 					Rook.moves(getPosRow("DarkRookRight"), getPosCol("DarkRookRight"), chessSquare, player);
 					pM = Rook.getPossibleMoves();
 					for(int i = 0; i < pM.length; i++) {
@@ -872,7 +957,7 @@ public class Game {
 	
 				}
 				
-				if(isInBoard("LightRookLeft", chessSquare)) {
+				if(isOnBoard("LightRookLeft", chessSquare)) {
 					Rook.moves(getPosRow("DarkRookLeft"), getPosCol("DarkRookLeft"), chessSquare, player);
 					pM = Rook.getPossibleMoves();
 					for(int i = 0; i < pM.length; i++) {
@@ -890,7 +975,7 @@ public class Game {
 					}
 				}
 				
-				if(isInBoard("LightKnightRight", chessSquare)) {
+				if(isOnBoard("LightKnightRight", chessSquare)) {
 					Knight.moves(getPosRow("DarkKnightRight"), getPosCol("DarkKnightRight"), chessSquare, player);
 					pM = Knight.getPossibleMoves();
 					for(int i = 0; i < pM.length; i++) {
@@ -908,7 +993,7 @@ public class Game {
 					}
 				}
 				
-				if(isInBoard("LightKnightLeft", chessSquare)) {
+				if(isOnBoard("LightKnightLeft", chessSquare)) {
 					Knight.moves(getPosRow("DarkKnightLeft"), getPosCol("DarkKnightLeft"), chessSquare, player);
 					pM = Knight.getPossibleMoves();
 					for(int i = 0; i < pM.length; i++) {
@@ -926,7 +1011,7 @@ public class Game {
 					}
 				}
 				
-				if(isInBoard("LightBishopRight", chessSquare)) {
+				if(isOnBoard("LightBishopRight", chessSquare)) {
 					Bishop.moves(getPosRow("DarkBishopRight"), getPosCol("DarkBishopRight"), chessSquare, player);
 					pM = Bishop.getPossibleMoves();
 					for(int i = 0; i < pM.length; i++) {
@@ -944,7 +1029,7 @@ public class Game {
 					}
 				}
 				
-				if(isInBoard("LightBishopLeft", chessSquare)) {
+				if(isOnBoard("LightBishopLeft", chessSquare)) {
 					Bishop.moves(getPosRow("DarkBishopLeft"), getPosCol("DarkBishopLeft"), chessSquare, player);
 					pM = Bishop.getPossibleMoves();
 					for(int i = 0; i < pM.length; i++) {
@@ -962,7 +1047,7 @@ public class Game {
 					}
 				}
 				
-				if(isInBoard("LightPawn1", chessSquare)) {
+				if(isOnBoard("LightPawn1", chessSquare)) {
 					Pawn.moves(getPosRow("DarkPawn1"), getPosCol("DarkPawn1"), chessSquare, player);
 					pM = Pawn.getPossibleMoves();
 					for(int i = 0; i < pM.length; i++) {
@@ -980,7 +1065,7 @@ public class Game {
 					}
 				}
 				
-				if(isInBoard("LightPawn2", chessSquare)) {
+				if(isOnBoard("LightPawn2", chessSquare)) {
 					Pawn.moves(getPosRow("DarkPawn2"), getPosCol("DarkPawn2"), chessSquare, player);
 					pM = Pawn.getPossibleMoves();
 					for(int i = 0; i < pM.length; i++) {
@@ -998,7 +1083,7 @@ public class Game {
 					}
 				}
 				
-				if(isInBoard("LightPawn3", chessSquare)) {
+				if(isOnBoard("LightPawn3", chessSquare)) {
 					Pawn.moves(getPosRow("DarkPawn3"), getPosCol("DarkPawn3"), chessSquare, player);
 					pM = Pawn.getPossibleMoves();
 					for(int i = 0; i < pM.length; i++) {
@@ -1016,7 +1101,7 @@ public class Game {
 					}
 				}
 				
-				if(isInBoard("LightPawn4", chessSquare)) {
+				if(isOnBoard("LightPawn4", chessSquare)) {
 					Pawn.moves(getPosRow("DarkPawn4"), getPosCol("DarkPawn4"), chessSquare, player);
 					pM = Pawn.getPossibleMoves();
 					for(int i = 0; i < pM.length; i++) {
@@ -1034,7 +1119,7 @@ public class Game {
 					}
 				}
 				
-				if(isInBoard("LightPawn5", chessSquare)) {
+				if(isOnBoard("LightPawn5", chessSquare)) {
 					Pawn.moves(getPosRow("DarkPawn5"), getPosCol("DarkPawn5"), chessSquare, player);
 					pM = Pawn.getPossibleMoves();
 					for(int i = 0; i < pM.length; i++) {
@@ -1052,7 +1137,7 @@ public class Game {
 					}
 				}
 				
-				if(isInBoard("LightPawn6", chessSquare)) {
+				if(isOnBoard("LightPawn6", chessSquare)) {
 					Pawn.moves(getPosRow("DarkPawn6"), getPosCol("DarkPawn6"), chessSquare, player);
 					pM = Pawn.getPossibleMoves();
 					for(int i = 0; i < pM.length; i++) {
@@ -1070,7 +1155,7 @@ public class Game {
 					}
 				}
 				
-				if(isInBoard("LightPawn7", chessSquare)) {
+				if(isOnBoard("LightPawn7", chessSquare)) {
 					Pawn.moves(getPosRow("DarkPawn7"), getPosCol("DarkPawn7"), chessSquare, player);
 					pM = Pawn.getPossibleMoves();
 					for(int i = 0; i < pM.length; i++) {
@@ -1088,7 +1173,7 @@ public class Game {
 					}
 				}
 				
-				if(isInBoard("LightPawn8", chessSquare)) {
+				if(isOnBoard("LightPawn8", chessSquare)) {
 					Pawn.moves(getPosRow("DarkPawn8"), getPosCol("DarkPawn8"), chessSquare, player);
 					pM = Pawn.getPossibleMoves();
 					for(int i = 0; i < pM.length; i++) {
@@ -1106,7 +1191,7 @@ public class Game {
 					}
 				}
 				
-				if(isInBoard("LightQueen", chessSquare)) {
+				if(isOnBoard("LightQueen", chessSquare)) {
 					Queen.moves(getPosRow("DarkQueen"), getPosCol("DarkQueen"), chessSquare, player);
 					pM = Queen.getPossibleMoves();
 					for(int i = 0; i < pM.length; i++) {
@@ -1145,115 +1230,122 @@ public class Game {
 		return false;
 	}
 	
-	public static boolean canHitChessBy(int posR, int posC, JButton[][] chessSquare, String p) {
+	/**
+	 * Examine whether there is a piece which can hit the chess giver.
+	 * @param posR is the row position of the chess giver.
+	 * @param posC is the column position of the chess giver.
+	 * @param chessSquare is the matrices of chess board.
+	 * @return true if there is a piece which is able to hit the chess giver or false if there is no one.
+	 */
+	public static boolean canHitChessBy(int posR, int posC, JButton[][] chessSquare) {
 		boolean[][] pM = new boolean[8][8];
 		if(!Game.isPlayer()) {
-			if(isInBoard("DarkRookRight", chessSquare)) {
+			if(isOnBoard("DarkRookRight", chessSquare)) {
 				Rook.moves(getPosRow("DarkRookRight"), getPosCol("DarkRookRight"), chessSquare, player);
 				pM = Rook.getPossibleMoves();
 				if(pM[posR][posC] == true)
 					return true;
 			}
 			
-			if(isInBoard("DarkRookLeft", chessSquare)) {
+			if(isOnBoard("DarkRookLeft", chessSquare)) {
 				Rook.moves(getPosRow("DarkRookLeft"), getPosCol("DarkRookLeft"), chessSquare, player);
 				pM = Rook.getPossibleMoves();
 				if(pM[posR][posC] == true)
 					return true;
 			}
 			
-			if(isInBoard("DarkKnightRight", chessSquare)) {
+			if(isOnBoard("DarkKnightRight", chessSquare)) {
 				Knight.moves(getPosRow("DarkKnightRight"), getPosCol("DarkKnightRight"), chessSquare, player);
 				pM = Knight.getPossibleMoves();
 				if(pM[posR][posC] == true)
 					return true;
 			}
 			
-			if(isInBoard("DarkKnightLeft", chessSquare)) {
+			if(isOnBoard("DarkKnightLeft", chessSquare)) {
 				Knight.moves(getPosRow("DarkKnightLeft"), getPosCol("DarkKnightLeft"), chessSquare, player);
 				pM = Knight.getPossibleMoves();
 				if(pM[posR][posC] == true)
 					return true;
 			}
 			
-			if(isInBoard("DarkBishopRight", chessSquare)) {
+			if(isOnBoard("DarkBishopRight", chessSquare)) {
 				Bishop.moves(getPosRow("DarkBishopRight"), getPosCol("DarkBishopRight"), chessSquare, player);
 				pM = Bishop.getPossibleMoves();
 				if(pM[posR][posC] == true)
 					return true;
 			}	
 			
-			if(isInBoard("DarkBishopLeft", chessSquare)) {
+			if(isOnBoard("DarkBishopLeft", chessSquare)) {
 				Bishop.moves(getPosRow("DarkBishopLeft"), getPosCol("DarkBishopLeft"), chessSquare, player);
 				pM = Bishop.getPossibleMoves();
 				if(pM[posR][posC] == true)
 					return true;
 			}
 			
-			if(isInBoard("DarkPawn1", chessSquare)) {
+			if(isOnBoard("DarkPawn1", chessSquare)) {
 				Pawn.moves(getPosRow("DarkPawn1"), getPosCol("DarkPawn1"), chessSquare, player);
 				pM = Pawn.getHitableMoves();
 				if(pM[posR][posC] == true)
 					return true;
 			}
 			
-			if(isInBoard("DarkPawn2", chessSquare)) {
+			if(isOnBoard("DarkPawn2", chessSquare)) {
 				Pawn.moves(getPosRow("DarkPawn2"), getPosCol("DarkPawn2"), chessSquare, player);
 				pM = Pawn.getHitableMoves();
 				if(pM[posR][posC] == true)
 					return true;
 			}
 			
-			if(isInBoard("DarkPawn3", chessSquare)) {
+			if(isOnBoard("DarkPawn3", chessSquare)) {
 				Pawn.moves(getPosRow("DarkPawn3"), getPosCol("DarkPawn3"), chessSquare, player);
 				pM = Pawn.getHitableMoves();
 				if(pM[posR][posC] == true)
 					return true;
 			}
 			
-			if(isInBoard("DarkPawn4", chessSquare)) {
+			if(isOnBoard("DarkPawn4", chessSquare)) {
 				Pawn.moves(getPosRow("DarkPawn4"), getPosCol("DarkPawn4"), chessSquare, player);
 				pM = Pawn.getHitableMoves();
 				if(pM[posR][posC] == true)
 					return true;
 			}
 			
-			if(isInBoard("DarkPawn5", chessSquare)) {
+			if(isOnBoard("DarkPawn5", chessSquare)) {
 				Pawn.moves(getPosRow("DarkPawn5"), getPosCol("DarkPawn5"), chessSquare, player);
 				pM = Pawn.getHitableMoves();
 				if(pM[posR][posC] == true)
 					return true;
 			}
 			
-			if(isInBoard("DarkPawn6", chessSquare)) {
+			if(isOnBoard("DarkPawn6", chessSquare)) {
 				Pawn.moves(getPosRow("DarkPawn6"), getPosCol("DarkPawn6"), chessSquare, player);
 				pM = Pawn.getHitableMoves();
 				if(pM[posR][posC] == true)
 					return true;
 			}
 			
-			if(isInBoard("DarkPawn7", chessSquare)) {
+			if(isOnBoard("DarkPawn7", chessSquare)) {
 				Pawn.moves(getPosRow("DarkPawn7"), getPosCol("DarkPawn7"), chessSquare, player);
 				pM = Pawn.getHitableMoves();
 				if(pM[posR][posC] == true)
 					return true;
 			}
 			
-			if(isInBoard("DarkPawn8", chessSquare)) {
+			if(isOnBoard("DarkPawn8", chessSquare)) {
 				Pawn.moves(getPosRow("DarkPawn8"), getPosCol("DarkPawn8"), chessSquare, player);
 				pM = Pawn.getHitableMoves();
 				if(pM[posR][posC] == true)
 					return true;
 			}
 			
-			if(isInBoard("DarkQueen", chessSquare)) {
+			if(isOnBoard("DarkQueen", chessSquare)) {
 				Queen.moves(getPosRow("DarkQueen"), getPosCol("DarkQueen"), chessSquare, player);
 				pM = Queen.getPossibleMoves();
 				if(pM[posR][posC] == true)
 					return true;
 			}
 				
-			if(isInBoard("DarkKing", chessSquare)) {
+			if(isOnBoard("DarkKing", chessSquare)) {
 				King.moves(getPosRow("DarkKing"), getPosCol("DarkKing"), chessSquare, player);
 				pM = King.getPossibleMoves();
 				if(pM[posR][posC] == true)
@@ -1261,112 +1353,112 @@ public class Game {
 			}
 				
 		} else if(Game.isPlayer()) {
-			if(isInBoard("LightRookRight", chessSquare)) {
+			if(isOnBoard("LightRookRight", chessSquare)) {
 				Rook.moves(getPosRow("LightRookRight"), getPosCol("LightRookRight"), chessSquare, player);
 				pM = Rook.getPossibleMoves();
 				if(pM[posR][posC] == true)
 					return true;
 			}
 			
-			if(isInBoard("LightRookLeft", chessSquare)) {
+			if(isOnBoard("LightRookLeft", chessSquare)) {
 				Rook.moves(getPosRow("LightRookLeft"), getPosCol("LightRookLeft"), chessSquare, player);
 				pM = Rook.getPossibleMoves();
 				if(pM[posR][posC] == true)
 					return true;
 			}
 			
-			if(isInBoard("LightKnightRight", chessSquare)) {
+			if(isOnBoard("LightKnightRight", chessSquare)) {
 				Knight.moves(getPosRow("LightKnightRight"), getPosCol("LightKnightRight"), chessSquare, player);
 				pM = Knight.getPossibleMoves();
 				if(pM[posR][posC] == true)
 					return true;
 			}
 			
-			if(isInBoard("LightKnightLeft", chessSquare)) {
+			if(isOnBoard("LightKnightLeft", chessSquare)) {
 				Knight.moves(getPosRow("LightKnightLeft"), getPosCol("LightKnightLeft"), chessSquare, player);
 				pM = Knight.getPossibleMoves();
 				if(pM[posR][posC] == true)
 					return true;
 			}
 			
-			if(isInBoard("LightBishopRight", chessSquare)) {
+			if(isOnBoard("LightBishopRight", chessSquare)) {
 				Bishop.moves(getPosRow("LightBishopRight"), getPosCol("LightBishopRight"), chessSquare, player);
 				pM = Bishop.getPossibleMoves();
 				if(pM[posR][posC] == true)
 					return true;
 			}	
 			
-			if(isInBoard("LightBishopLeft", chessSquare)) {
+			if(isOnBoard("LightBishopLeft", chessSquare)) {
 				Bishop.moves(getPosRow("LightBishopLeft"), getPosCol("LightBishopLeft"), chessSquare, player);
 				pM = Bishop.getPossibleMoves();
 				if(pM[posR][posC] == true)
 					return true;
 			}
 			
-			if(isInBoard("LightPawn1", chessSquare)) {
+			if(isOnBoard("LightPawn1", chessSquare)) {
 				Pawn.moves(getPosRow("LightPawn1"), getPosCol("LightPawn1"), chessSquare, player);
 				pM = Pawn.getHitableMoves();
 				if(pM[posR][posC] == true)
 					return true;
 			}
 			
-			if(isInBoard("LightPawn2", chessSquare)) {
+			if(isOnBoard("LightPawn2", chessSquare)) {
 				Pawn.moves(getPosRow("LightPawn2"), getPosCol("LightPawn2"), chessSquare, player);
 				pM = Pawn.getHitableMoves();
 				if(pM[posR][posC] == true)
 					return true;
 			}
 			
-			if(isInBoard("LightPawn3", chessSquare)) {
+			if(isOnBoard("LightPawn3", chessSquare)) {
 				Pawn.moves(getPosRow("LightPawn3"), getPosCol("LightPawn3"), chessSquare, player);
 				pM = Pawn.getHitableMoves();
 				if(pM[posR][posC] == true)
 					return true;
 			}
 			
-			if(isInBoard("LightPawn4", chessSquare)) {
+			if(isOnBoard("LightPawn4", chessSquare)) {
 				Pawn.moves(getPosRow("LightPawn4"), getPosCol("LightPawn4"), chessSquare, player);
 				pM = Pawn.getHitableMoves();
 				if(pM[posR][posC] == true)
 					return true;
 			}
 			
-			if(isInBoard("LightPawn5", chessSquare)) {
+			if(isOnBoard("LightPawn5", chessSquare)) {
 				Pawn.moves(getPosRow("LightPawn5"), getPosCol("LightPawn5"), chessSquare, player);
 				pM = Pawn.getHitableMoves();
 				if(pM[posR][posC] == true)
 					return true;
 			}
 			
-			if(isInBoard("LightPawn6", chessSquare)) {
+			if(isOnBoard("LightPawn6", chessSquare)) {
 				Pawn.moves(getPosRow("LightPawn6"), getPosCol("LightPawn6"), chessSquare, player);
 				pM = Pawn.getHitableMoves();
 				if(pM[posR][posC] == true)
 					return true;
 			}
 			
-			if(isInBoard("LightPawn7", chessSquare)) {
+			if(isOnBoard("LightPawn7", chessSquare)) {
 				Pawn.moves(getPosRow("LightPawn7"), getPosCol("LightPawn7"), chessSquare, player);
 				pM = Pawn.getHitableMoves();
 				if(pM[posR][posC] == true)
 					return true;
 			}
 			
-			if(isInBoard("LightPawn8", chessSquare)) {
+			if(isOnBoard("LightPawn8", chessSquare)) {
 				Pawn.moves(getPosRow("LightPawn8"), getPosCol("LightPawn8"), chessSquare, player);
 				pM = Pawn.getHitableMoves();
 				if(pM[posR][posC] == true)
 					return true;
 			}
 			
-			if(isInBoard("LightQueen", chessSquare)) {
+			if(isOnBoard("LightQueen", chessSquare)) {
 				Queen.moves(getPosRow("LightQueen"), getPosCol("LightQueen"), chessSquare, player);
 				pM = Queen.getPossibleMoves();
 				if(pM[posR][posC] == true)
 					return true;
 			}
 				
-			if(isInBoard("LightKing", chessSquare)) {
+			if(isOnBoard("LightKing", chessSquare)) {
 				King.moves(getPosRow("LightKing"), getPosCol("LightKing"), chessSquare, player);
 				pM = King.getPossibleMoves();
 				if(pM[posR][posC] == true)
@@ -1378,13 +1470,22 @@ public class Game {
 		return false;
 	}
 	
+	/**
+	 * Examine whether there is a piece, which can move between the king in chess and the opponent which gives the chess.
+	 * @param posR is the row position of the chess giver.
+	 * @param posC is the column position of the chess giver.
+	 * @param chessSquare is the matrices of chess board.
+	 * @param kingPosR is the row position of the king in chess.
+	 * @param kingPosC is the column position of the king in chess.
+	 * @return true if there is a piece which is able to interrupt or false if there is no one.
+	 */
 	public static boolean canInterruptChess(int posR, int posC, JButton[][] chessSquare, int kingPosR, int kingPosC) {
 		boolean[][] pM = new boolean[8][8];
 		boolean[][] pM2 = new boolean[8][8];
 		pM = setChessRoad(posR, posC, kingPosR, kingPosC);
 		
 		if(!Game.isPlayer()) {
-			if(isInBoard("DarkRookLeft", chessSquare)) {
+			if(isOnBoard("DarkRookLeft", chessSquare)) {
 				Rook.moves(getPosRow("DarkRookLeft"), getPosCol("DarkRookLeft"), chessSquare, player);
 				pM2 = Rook.getPossibleMoves();
 				for(int i = 0; i < 8; i++) {
@@ -1397,7 +1498,7 @@ public class Game {
 				}
 			}
 			
-			if(isInBoard("DarkRookRight", chessSquare)) {
+			if(isOnBoard("DarkRookRight", chessSquare)) {
 				Rook.moves(getPosRow("DarkRookRight"), getPosCol("DarkRookRight"), chessSquare, player);
 				pM2 = Rook.getPossibleMoves();
 				for(int i = 0; i < 8; i++) {
@@ -1410,7 +1511,7 @@ public class Game {
 				}
 			}
 			
-			if(isInBoard("DarkBishopLeft", chessSquare)) {
+			if(isOnBoard("DarkBishopLeft", chessSquare)) {
 				Bishop.moves(getPosRow("DarkBishopLeft"), getPosCol("DarkBishopLeft"), chessSquare, player);
 				pM2 = Bishop.getPossibleMoves();
 				for(int i = 0; i < 8; i++) {
@@ -1423,7 +1524,7 @@ public class Game {
 				}
 			}
 			
-			if(isInBoard("DarkBishopRight", chessSquare)) {
+			if(isOnBoard("DarkBishopRight", chessSquare)) {
 				Bishop.moves(getPosRow("DarkBishopRight"), getPosCol("DarkBishopRight"), chessSquare, player);
 				pM2 = Bishop.getPossibleMoves();
 				for(int i = 0; i < 8; i++) {
@@ -1436,7 +1537,7 @@ public class Game {
 				}
 			}
 			
-			if(isInBoard("DarkQueen", chessSquare)) {
+			if(isOnBoard("DarkQueen", chessSquare)) {
 				Queen.moves(getPosRow("DarkQueen"), getPosCol("DarkQueen"), chessSquare, player);
 				pM2 = Queen.getPossibleMoves();
 				for(int i = 0; i < 8; i++) {
@@ -1449,7 +1550,7 @@ public class Game {
 				}
 			}
 			
-			if(isInBoard("DarkPawn1", chessSquare)) {
+			if(isOnBoard("DarkPawn1", chessSquare)) {
 				Pawn.moves(getPosRow("DarkPawn1"), getPosCol("DarkPawn1"), chessSquare, player);
 				pM2 = Pawn.getPossibleMoves();
 				for(int i = 0; i < 8; i++) {
@@ -1462,7 +1563,7 @@ public class Game {
 				}
 			}
 			
-			if(isInBoard("DarkPawn2", chessSquare)) {
+			if(isOnBoard("DarkPawn2", chessSquare)) {
 				Pawn.moves(getPosRow("DarkPawn2"), getPosCol("DarkPawn2"), chessSquare, player);
 				pM2 = Pawn.getPossibleMoves();
 				for(int i = 0; i < 8; i++) {
@@ -1475,7 +1576,7 @@ public class Game {
 				}
 			}
 			
-			if(isInBoard("DarkPawn3", chessSquare)) {
+			if(isOnBoard("DarkPawn3", chessSquare)) {
 				Pawn.moves(getPosRow("DarkPawn3"), getPosCol("DarkPawn3"), chessSquare, player);
 				pM2 = Pawn.getPossibleMoves();
 				for(int i = 0; i < 8; i++) {
@@ -1488,7 +1589,7 @@ public class Game {
 				}
 			}
 			
-			if(isInBoard("DarkPawn4", chessSquare)) {
+			if(isOnBoard("DarkPawn4", chessSquare)) {
 				Pawn.moves(getPosRow("DarkPawn4"), getPosCol("DarkPawn4"), chessSquare, player);
 				pM2 = Pawn.getPossibleMoves();
 				for(int i = 0; i < 8; i++) {
@@ -1501,7 +1602,7 @@ public class Game {
 				}
 			}
 			
-			if(isInBoard("DarkPawn5", chessSquare)) {
+			if(isOnBoard("DarkPawn5", chessSquare)) {
 				Pawn.moves(getPosRow("DarkPawn5"), getPosCol("DarkPawn5"), chessSquare, player);
 				pM2 = Pawn.getPossibleMoves();
 				for(int i = 0; i < 8; i++) {
@@ -1514,7 +1615,7 @@ public class Game {
 				}
 			}
 			
-			if(isInBoard("DarkPawn6", chessSquare)) {
+			if(isOnBoard("DarkPawn6", chessSquare)) {
 				Pawn.moves(getPosRow("DarkPawn6"), getPosCol("DarkPawn6"), chessSquare, player);
 				pM2 = Pawn.getPossibleMoves();
 				for(int i = 0; i < 8; i++) {
@@ -1527,7 +1628,7 @@ public class Game {
 				}
 			}
 			
-			if(isInBoard("DarkPawn7", chessSquare)) {
+			if(isOnBoard("DarkPawn7", chessSquare)) {
 				Pawn.moves(getPosRow("DarkPawn7"), getPosCol("DarkPawn7"), chessSquare, player);
 				pM2 = Pawn.getPossibleMoves();
 				for(int i = 0; i < 8; i++) {
@@ -1540,7 +1641,7 @@ public class Game {
 				}
 			}
 			
-			if(isInBoard("DarkPawn8", chessSquare)) {
+			if(isOnBoard("DarkPawn8", chessSquare)) {
 				Pawn.moves(getPosRow("DarkPawn8"), getPosCol("DarkPawn8"), chessSquare, player);
 				pM2 = Pawn.getPossibleMoves();
 				for(int i = 0; i < 8; i++) {
@@ -1554,7 +1655,7 @@ public class Game {
 			}
 			
 		} else if(Game.isPlayer()) {
-			if(isInBoard("LightRookLeft", chessSquare)) {
+			if(isOnBoard("LightRookLeft", chessSquare)) {
 				Rook.moves(getPosRow("LightRookLeft"), getPosCol("LightRookLeft"), chessSquare, player);
 				pM2 = Rook.getPossibleMoves();
 				for(int i = 0; i < 8; i++) {
@@ -1567,7 +1668,7 @@ public class Game {
 				}
 			}
 			
-			if(isInBoard("LightRookRight", chessSquare)) {
+			if(isOnBoard("LightRookRight", chessSquare)) {
 				Rook.moves(getPosRow("LightRookRight"), getPosCol("LightRookRight"), chessSquare, player);
 				pM2 = Rook.getPossibleMoves();
 				for(int i = 0; i < 8; i++) {
@@ -1580,7 +1681,7 @@ public class Game {
 				}
 			}
 			
-			if(isInBoard("LightBishopLeft", chessSquare)) {
+			if(isOnBoard("LightBishopLeft", chessSquare)) {
 				Bishop.moves(getPosRow("LightBishopLeft"), getPosCol("LightBishopLeft"), chessSquare, player);
 				pM2 = Bishop.getPossibleMoves();
 				for(int i = 0; i < 8; i++) {
@@ -1593,7 +1694,7 @@ public class Game {
 				}
 			}
 			
-			if(isInBoard("LightBishopRight", chessSquare)) {
+			if(isOnBoard("LightBishopRight", chessSquare)) {
 				Bishop.moves(getPosRow("LightBishopRight"), getPosCol("LightBishopRight"), chessSquare, player);
 				pM2 = Bishop.getPossibleMoves();
 				for(int i = 0; i < 8; i++) {
@@ -1606,7 +1707,7 @@ public class Game {
 				}
 			}
 			
-			if(isInBoard("LightQueen", chessSquare)) {
+			if(isOnBoard("LightQueen", chessSquare)) {
 				Queen.moves(getPosRow("LightQueen"), getPosCol("LightQueen"), chessSquare, player);
 				pM2 = Queen.getPossibleMoves();
 				for(int i = 0; i < 8; i++) {
@@ -1619,7 +1720,7 @@ public class Game {
 				}
 			}
 			
-			if(isInBoard("LightPawn1", chessSquare)) {
+			if(isOnBoard("LightPawn1", chessSquare)) {
 				Pawn.moves(getPosRow("LightPawn1"), getPosCol("LightPawn1"), chessSquare, player);
 				pM2 = Pawn.getPossibleMoves();
 				for(int i = 0; i < 8; i++) {
@@ -1632,7 +1733,7 @@ public class Game {
 				}
 			}
 			
-			if(isInBoard("LightPawn2", chessSquare)) {
+			if(isOnBoard("LightPawn2", chessSquare)) {
 				Pawn.moves(getPosRow("LightPawn2"), getPosCol("LightPawn2"), chessSquare, player);
 				pM2 = Pawn.getPossibleMoves();
 				for(int i = 0; i < 8; i++) {
@@ -1645,7 +1746,7 @@ public class Game {
 				}
 			}
 			
-			if(isInBoard("LightPawn3", chessSquare)) {
+			if(isOnBoard("LightPawn3", chessSquare)) {
 				Pawn.moves(getPosRow("LightPawn3"), getPosCol("LightPawn3"), chessSquare, player);
 				pM2 = Pawn.getPossibleMoves();
 				for(int i = 0; i < 8; i++) {
@@ -1658,7 +1759,7 @@ public class Game {
 				}
 			}
 			
-			if(isInBoard("LightPawn4", chessSquare)) {
+			if(isOnBoard("LightPawn4", chessSquare)) {
 				Pawn.moves(getPosRow("LightPawn4"), getPosCol("LightPawn4"), chessSquare, player);
 				pM2 = Pawn.getPossibleMoves();
 				for(int i = 0; i < 8; i++) {
@@ -1671,7 +1772,7 @@ public class Game {
 				}
 			}
 			
-			if(isInBoard("LightPawn5", chessSquare)) {
+			if(isOnBoard("LightPawn5", chessSquare)) {
 				Pawn.moves(getPosRow("LightPawn5"), getPosCol("LightPawn5"), chessSquare, player);
 				pM2 = Pawn.getPossibleMoves();
 				for(int i = 0; i < 8; i++) {
@@ -1684,7 +1785,7 @@ public class Game {
 				}
 			}
 			
-			if(isInBoard("LightPawn6", chessSquare)) {
+			if(isOnBoard("LightPawn6", chessSquare)) {
 				Pawn.moves(getPosRow("LightPawn6"), getPosCol("LightPawn6"), chessSquare, player);
 				pM2 = Pawn.getPossibleMoves();
 				for(int i = 0; i < 8; i++) {
@@ -1697,7 +1798,7 @@ public class Game {
 				}
 			}
 			
-			if(isInBoard("LightPawn7", chessSquare)) {
+			if(isOnBoard("LightPawn7", chessSquare)) {
 				Pawn.moves(getPosRow("LightPawn7"), getPosCol("LightPawn7"), chessSquare, player);
 				pM2 = Pawn.getPossibleMoves();
 				for(int i = 0; i < 8; i++) {
@@ -1710,7 +1811,7 @@ public class Game {
 				}
 			}
 			
-			if(isInBoard("LightPawn8", chessSquare)) {
+			if(isOnBoard("LightPawn8", chessSquare)) {
 				Pawn.moves(getPosRow("LightPawn8"), getPosCol("LightPawn8"), chessSquare, player);
 				pM2 = Pawn.getPossibleMoves();
 				for(int i = 0; i < 8; i++) {
@@ -1727,7 +1828,13 @@ public class Game {
 		return false;
 	}
 	
-	public static boolean isInBoard(String piece, JButton[][] chessSquare) {
+	/**
+	 * Examine a piece is on board or not.
+	 * @param piece is the name of the piece.
+	 * @param chessSquare is the matrices of chess board.
+	 * @return true if the piece is on board, false if it is not.
+	 */
+	public static boolean isOnBoard(String piece, JButton[][] chessSquare) {
 		for(int i = 0; i < chessSquare.length; i++) {
 			for(int j = 0; j < chessSquare.length; j++) {
 				if(piece.compareTo(ChessPiece.chessPieces[i][j]) == 0) {
@@ -1736,13 +1843,5 @@ public class Game {
 			}
 		}
 		return false;
-	}
-	
-	public static void setChessBoardDisabled(JButton[][] chessSquare){
-		for(int i = 0; i < chessSquare.length; i++) {
-			for(int j = 0; j < chessSquare.length; j++) {
-				chessSquare[i][j].setEnabled(false);
-			}
-		}
 	}
 }
