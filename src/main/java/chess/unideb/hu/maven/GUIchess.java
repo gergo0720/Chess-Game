@@ -70,7 +70,7 @@ public class GUIchess extends JFrame implements MouseListener, ActionListener {
 			.getWidth();
 	
 	/**
-	 * String to set the message of {@code labelMessage}
+	 * String to set the message of {@code labelMessage}.
 	 */
 	private static String message = Players.getUserName()
 			+ " (light) 's round!";
@@ -141,7 +141,7 @@ public class GUIchess extends JFrame implements MouseListener, ActionListener {
 	private JPanel logoPanel;
 	
 	/**
-	 * Base panel of the {@code toolbar}
+	 * Base panel of the {@code toolbar}.
 	 */
 	private JPanel statusToolBar;
 	
@@ -296,7 +296,7 @@ public class GUIchess extends JFrame implements MouseListener, ActionListener {
 	private String messageMoves = "Moves";
 	
 	/**
-	 * Constructor of the GUI
+	 * Constructor of the GUI.
 	 * @param g is the object of game logic.
 	 */
 	public GUIchess(Game g) {
@@ -304,9 +304,9 @@ public class GUIchess extends JFrame implements MouseListener, ActionListener {
 	}
 
 	/**
-	 * Initialize gui,
-	 * set window parameters and handle piece and control buttons,
-	 * draw chess board and fill it with pieces.
+	 * Initialize gui.
+	 * Set window parameters and handle piece and control buttons.
+	 * Draw chess board and fill it with pieces.
 	 */
 	private void initGui() {
 		setTitle("Chess");
@@ -446,7 +446,7 @@ public class GUIchess extends JFrame implements MouseListener, ActionListener {
 	}
 	
 	/**
-	 * Read piece images from resource
+	 * Read piece images from resource.
 	 */
 	private void fillImages() {
 		try {
@@ -505,6 +505,7 @@ public class GUIchess extends JFrame implements MouseListener, ActionListener {
 	
 	/**
 	 * Set the actual valid move.
+	 * @param s is the message that should be set.
 	 */
 	public static void setMovesDisplay(String s) {
 		GUIchess.labelMoves.setText(s);
@@ -578,6 +579,7 @@ public class GUIchess extends JFrame implements MouseListener, ActionListener {
 
 	/**
 	 * Handle the event of selecting a chess piece to move.
+	 * @param e pressed event
 	 */
 	public void mousePressed(MouseEvent e) {
 		if ((e.getClickCount() == 1 || e.getClickCount() == 2)
@@ -632,6 +634,7 @@ public class GUIchess extends JFrame implements MouseListener, ActionListener {
 	
 	/**
 	 * Handle the event of pressing control buttons.
+	 * @param e control buttons event
 	 */
 	public void actionPerformed(ActionEvent e) {
 		if (e.getSource() == save) {
@@ -875,7 +878,7 @@ public class GUIchess extends JFrame implements MouseListener, ActionListener {
 	}
 
 	/**
-	 * Set light knight image
+	 * Set light knight image.
 	 * @param lightKnight is the image that should be set.
 	 */
 	public void setLightKnight(Image lightKnight) {
@@ -923,7 +926,7 @@ public class GUIchess extends JFrame implements MouseListener, ActionListener {
 	}
 
 	/**
-	 * Set light Pawn image
+	 * Set light Pawn image.
 	 * @param lightPawn is the image that should be set.
 	 */
 	public void setLightPawn(Image lightPawn) {
@@ -971,30 +974,37 @@ public class GUIchess extends JFrame implements MouseListener, ActionListener {
 	}
 
 	/**
-	 * Mouse click handling
+	 * Mouse click handling.
+	 * @param e event.
 	 */
 	public void mouseClicked(MouseEvent e) {
 	}
 
 	/**
-	 * Mouse release handling
+	 * Mouse release handling.
+	 * @param e event.
 	 */
 	public void mouseReleased(MouseEvent e) {
 	}
 
 	/**
-	 * Mouse entered handling
+	 * Mouse entered handling.
+	 * @param e event.
 	 */
-	public void mouseEntered(MouseEvent e) {	}
+	public void mouseEntered(MouseEvent e) {
 
-	/**
-	 * Mouse exited handling
-	 */
-	public void mouseExited(MouseEvent e) {
 	}
 
 	/**
-	 * Set the command to open the webpage
+	 * Mouse exited handling.
+	 * @param e event.
+	 */
+	public void mouseExited(MouseEvent e) {
+
+	}
+
+	/**
+	 * Set the command to open the webpage.
 	 * @param process is the parameter that should be set.
 	 */
 	public void setProcess(Process process) {
