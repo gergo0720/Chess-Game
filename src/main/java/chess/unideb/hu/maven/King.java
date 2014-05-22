@@ -144,6 +144,8 @@ public class King {
 	
 	/**
 	 * Examine what piece are around the king and fill {@code possibleMoves} accordingly.
+	 * In the case of dark king it remembers the light pieces if it finds one and the so does the light king with dark pieces.
+	 * If king can see its own type of piece it will remember and set not to able move that way.
 	 * @param currPosRow is the row position of the piece before move.
 	 * @param currPosCol is the column position of the piece before move.
 	 * @param chessSquare is the matrices of the chess board
@@ -273,7 +275,8 @@ public class King {
 	}
 	
 	/**
-	 * Grab the piece, {@code newPiece} and {@code newType} are set with the information of the piece, and store the previous position before move.
+	 * Grab the piece, {@code newPiece} and {@code newType} are set with the information of the piece.
+	 * Store the previous position before move.
 	 * @param i is the previous row position of the piece.
 	 * @param j is the previous column position of the piece.
 	 */
@@ -459,7 +462,8 @@ public class King {
 	}
 
 	/**
-	 * Initialize all the matrices and arrays, {@code possibleMoves}, {@code possibleChess}, {@code isOkay}, {@code isDark} and {@code isLight}.
+	 * Initialize all the matrices and arrays.
+	 * {@code possibleMoves}, {@code possibleChess}, {@code isOkay}, {@code isDark} and {@code isLight}.
 	 */
 	private static void inits() {
 		for(int i = 0; i < possibleMoves.length; i++){

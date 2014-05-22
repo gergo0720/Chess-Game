@@ -6,68 +6,113 @@ import javax.swing.JButton;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
+/**
+ * 
+ * @author gergo0720
+ * Class of Rook
+ */
 public class Rook {
+	
+	/**
+	 * Logger to debug, log information and  warnings.
+	 */
 	private static Logger logger = LoggerFactory.getLogger(Rook.class);
+	
+	/**
+	 * 8x8 matrices, contains blocks for light rook.
+	 */
 	private static boolean[] isOkay = new boolean[4];
+	
+	/**
+	 * 8x8 matrices, contains blocks for dark rook.
+	 */
 	private static boolean[] isLight = new boolean[4];
+	
+	/**
+	 * 8x8 matrices contains blocks for rook.
+	 */
 	private static boolean[] isDark = new boolean[4];
+	
+	/**
+	 * The name of the piece that should be moved.
+	 */
 	private static String newPiece;
+	
+	/**
+	 * The type of the piece that should be moved.
+	 */
 	private static String newType;
+	
+	/**
+	 * The previous row position of the piece that should be moved.
+	 */
 	private static int oldPosRow;
+	
+	/**
+	 * The previous column position of the piece that should be moved.
+	 */
 	private static int oldPosCol;
+	
+	/**
+	 * The number of the moves of the dark-left rook.
+	 */
 	private static int moveCounterDarkLeft = 0;
+	
+	/**
+	 * The number of the moves of the dark-right rook.
+	 */
 	private static int moveCounterDarkRight = 0;
+	
+	/**
+	 * The number of the moves of the light-left rook .
+	 */
 	private static int moveCounterLightLeft = 0;
+	
+	/**
+	 * The number of the moves of the light-right rook.
+	 */
 	private static int moveCounterLightRight = 0;
 
+	/**
+	 * Get the number of taken moves of dark-left rook.
+	 * @return taken moves.
+	 */
 	public static int getMoveCounterDarkLeft() {
 		return moveCounterDarkLeft;
 	}
 
-
-
-	public static void setMoveCounterDarkLeft(int moveCounterDarkLeft) {
-		Rook.moveCounterDarkLeft = moveCounterDarkLeft;
-	}
-
-
-
+	/**
+	 * Get the number of taken moves of dark-right rook.
+	 * @return taken moves.
+	 */
 	public static int getMoveCounterDarkRight() {
 		return moveCounterDarkRight;
 	}
 
-
-
-	public static void setMoveCounterDarkRight(int moveCounterDarkRight) {
-		Rook.moveCounterDarkRight = moveCounterDarkRight;
-	}
-
-
-
+	/**
+	 * Get the number of taken moves of light-left rook.
+	 * @return taken moves.
+	 */
 	public static int getMoveCounterLightLeft() {
 		return moveCounterLightLeft;
 	}
 
-
-
-	public static void setMoveCounterLightLeft(int moveCounterLightLeft) {
-		Rook.moveCounterLightLeft = moveCounterLightLeft;
-	}
-
-
-
+	/**
+	 * Get the number of taken moves of light-right rook.
+	 * @return taken moves.
+	 */
 	public static int getMoveCounterLightRight() {
 		return moveCounterLightRight;
 	}
-
-
-
-	public static void setMoveCounterLightDark(int moveCounterLightRight) {
-		Rook.moveCounterLightRight = moveCounterLightRight;
-	}
-
+	
+	/**
+	 * 8x8 matrices that contains the possible moves of the rook.
+	 */
 	private static boolean[][] possibleMoves = new boolean[8][8];
+	
+	/**
+	 * The operators to determine the possible moves of the rook.
+	 */
 	private static Integer move[][][] = 
 	{
 		{
@@ -120,12 +165,23 @@ public class Rook {
 		}
 	};
 	
+	/**
+	 * Constructor of Rook.
+	 */
 	public Rook(){
 		
 	}
 	
 	
-	
+	/**
+	 * Examine what piece are around the rook and fill {@code possibleMoves} accordingly.
+	 * In the case of dark rook it remembers the light pieces if it finds one and so does the light rook as well with dark pieces.
+	 * If rook can see its own type of piece it will remember and set not to able move that way.
+	 * @param currPosRow is the row position of the piece before move.
+	 * @param currPosCol is the column position of the piece before move.
+	 * @param chessSquare is the matrices of the chess board
+	 * @param player is which player is active, it is need to know to determine which rook is active.
+	 */
 	static void moves(int currPosRow, int currPosCol, JButton[][] chessSquare, boolean player){
 		inits();
 		for(int i = 0; i < 8; i++){
@@ -164,6 +220,12 @@ public class Rook {
 		 }
 	}
 	
+	/**
+	 * Grab the piece, {@code newPiece} and {@code newType} are set with the information of the piece.
+	 * Store the previous position before move.
+	 * @param i is the previous row position of the piece.
+	 * @param j is the previous column position of the piece.
+	 */
 	public static void grabPiece(int i, int j) {
 		GUIchess.drawPossibleMoves(possibleMoves, GUIchess.getChessSquare());
 		newPiece = ChessPiece.chessPieces[i][j];
@@ -171,7 +233,13 @@ public class Rook {
 		oldPosRow = ChessPiece.chessPiecesPositions[i][j][0];
 		oldPosCol = ChessPiece.chessPiecesPositions[i][j][1];
 	}
-
+	
+	/**
+	 * Place the piece to the new place.
+	 * @param i is the row position where piece should be placed.
+	 * @param j is the column position where piece should be placed.
+	 * @param chessSquare is the matrices of the chess board.
+	 */
 	public static void placePiece(int i, int j, JButton[][] chessSquare) {
 		try {	
 			if(possibleMoves[i][j]){
@@ -222,6 +290,10 @@ public class Rook {
 		}
 	}
 
+	/**
+	 * Initialize all the matrices and arrays.
+	 * {@code possibleMoves}, {@code possibleChess}, {@code isOkay}, {@code isDark} and {@code isLight}.
+	 */
 	private static void inits() {
 		for(int i = 0; i < possibleMoves.length; i++){
 			for(int j = 0; j < possibleMoves.length; j++){
@@ -240,6 +312,10 @@ public class Rook {
 		
 	}
 	
+	/**
+	 * Get the piece all the possible moves.
+	 * @return all the possible moves.
+	 */
 	public static boolean[][] getPossibleMoves() {
 		return possibleMoves;
 	}
