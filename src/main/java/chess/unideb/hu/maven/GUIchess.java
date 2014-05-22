@@ -379,7 +379,7 @@ public class GUIchess extends JFrame implements MouseListener, ActionListener {
 		logoPanel.add(logo);
 
 		try {
-			img = ImageIO.read(getClass().getResource("/chesslogo.png"));
+			img = ImageIO.read(getClass().getResource(File.separator+"chesslogo.png"));
 			logo.setIcon(new ImageIcon(img));
 		} catch (Exception e) {
 			logger.error("Failed to load logo!");
@@ -450,51 +450,51 @@ public class GUIchess extends JFrame implements MouseListener, ActionListener {
 	 */
 	private void fillImages() {
 		try {
-			img = ImageIO.read(getClass().getResource("/DarkRookLeft.png"));
+			img = ImageIO.read(getClass().getResource(File.separator+"DarkRookLeft.png"));
 			setDarkRook(img.getScaledInstance(chessPieceSize, chessPieceSize,
 					java.awt.Image.SCALE_SMOOTH));
 
-			img = ImageIO.read(getClass().getResource("/DarkKnightLeft.png"));
+			img = ImageIO.read(getClass().getResource(File.separator+"DarkKnightLeft.png"));
 			setDarkKnight(img.getScaledInstance(chessPieceSize, chessPieceSize,
 					java.awt.Image.SCALE_SMOOTH));
 
-			img = ImageIO.read(getClass().getResource("/DarkBishopLeft.png"));
+			img = ImageIO.read(getClass().getResource(File.separator+"DarkBishopLeft.png"));
 			setDarkBishop(img.getScaledInstance(chessPieceSize, chessPieceSize,
 					java.awt.Image.SCALE_SMOOTH));
 
-			img = ImageIO.read(getClass().getResource("/DarkQueen.png"));
+			img = ImageIO.read(getClass().getResource(File.separator+"DarkQueen.png"));
 			setDarkQueen(img.getScaledInstance(chessPieceSize, chessPieceSize,
 					java.awt.Image.SCALE_SMOOTH));
 
-			img = ImageIO.read(getClass().getResource("/DarkKing.png"));
+			img = ImageIO.read(getClass().getResource(File.separator+"DarkKing.png"));
 			setDarkKing(img.getScaledInstance(chessPieceSize, chessPieceSize,
 					java.awt.Image.SCALE_SMOOTH));
 
-			img = ImageIO.read(getClass().getResource("/DarkPawn1.png"));
+			img = ImageIO.read(getClass().getResource(File.separator+"DarkPawn1.png"));
 			setDarkPawn(img.getScaledInstance(chessPieceSize, chessPieceSize,
 					java.awt.Image.SCALE_SMOOTH));
 
-			img = ImageIO.read(getClass().getResource("/LightRookLeft.png"));
+			img = ImageIO.read(getClass().getResource(File.separator+"LightRookLeft.png"));
 			setLightRook(img.getScaledInstance(chessPieceSize, chessPieceSize,
 					java.awt.Image.SCALE_SMOOTH));
 
-			img = ImageIO.read(getClass().getResource("/LightKnightLeft.png"));
+			img = ImageIO.read(getClass().getResource(File.separator+"LightKnightLeft.png"));
 			setLightKnight(img.getScaledInstance(chessPieceSize,
 					chessPieceSize, java.awt.Image.SCALE_SMOOTH));
 
-			img = ImageIO.read(getClass().getResource("/LightBishopLeft.png"));
+			img = ImageIO.read(getClass().getResource(File.separator+"LightBishopLeft.png"));
 			setLightBishop(img.getScaledInstance(chessPieceSize,
 					chessPieceSize, java.awt.Image.SCALE_SMOOTH));
 
-			img = ImageIO.read(getClass().getResource("/LightQueen.png"));
+			img = ImageIO.read(getClass().getResource(File.separator+"LightQueen.png"));
 			setLightQueen(img.getScaledInstance(chessPieceSize, chessPieceSize,
 					java.awt.Image.SCALE_SMOOTH));
 
-			img = ImageIO.read(getClass().getResource("/LightKing.png"));
+			img = ImageIO.read(getClass().getResource(File.separator+"LightKing.png"));
 			setLightKing(img.getScaledInstance(chessPieceSize, chessPieceSize,
 					java.awt.Image.SCALE_SMOOTH));
 
-			img = ImageIO.read(getClass().getResource("/LightPawn1.png"));
+			img = ImageIO.read(getClass().getResource(File.separator+"LightPawn1.png"));
 			setLightPawn(img.getScaledInstance(chessPieceSize, chessPieceSize,
 					java.awt.Image.SCALE_SMOOTH));
 		} catch (IOException e) {
@@ -547,7 +547,7 @@ public class GUIchess extends JFrame implements MouseListener, ActionListener {
 				for (int j = 0; j < chessSquares.length; j++) {
 					if (ChessPiece.chessPiecesPositions[i][j][0] != -1
 							&& ChessPiece.chessPiecesPositions[i][j][1] != -1) {
-						img = ImageIO.read(GameMain.class.getResource("/"
+						img = ImageIO.read(GameMain.class.getResource(File.separator
 								+ ChessPiece.chessPieces[i][j].toString()
 								+ ".png"));
 						newImg = img.getScaledInstance(chessPieceSize,
@@ -590,7 +590,6 @@ public class GUIchess extends JFrame implements MouseListener, ActionListener {
 				for (int j = 0; j < chessSquares.length; j++) {
 
 					if (e.getSource() == chessSquares[i][j]) {
-						logger.info(ChessPiece.chessPiecesTypes[i][j]);
 						paintDefaultSquare();
 						if (active) {
 							if (ChessPiece.chessPiecesTypes[i][j]
