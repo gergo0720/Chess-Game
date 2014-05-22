@@ -12,18 +12,70 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+/**
+ * 
+ * @author gergo0720
+ * Class of setting up base matrices.
+ *	 
+ */
 public class ChessPiece {
+	
+	/**
+	 * Logger to debug, log information and warnings.
+	 */
 	private static Logger logger = LoggerFactory.getLogger(ChessPiece.class);
+	
+	/**
+	 * An empty string to set empty places in matrices.
+	 */
 	static final String empty = "EMPTY";
+	
+	/**
+	 * 8x8 matrice that contains the names of the pieces.
+	 */
 	static String[][] chessPieces = new String[8][8];
+	
+	/**
+	 * 8x8 matrice that contains the types of the pieces.
+	 */
 	static String[][] chessPiecesTypes = new String[8][8];
+	
+	/**
+	 * 8x8x2 matrice that contains the positions of the pieces.
+	 */
 	static Integer[][][] chessPiecesPositions = new Integer[8][8][2];
+	
+	/**
+	 * Name of the input file, which contains the name, type and position information.
+	 */
 	private static String filename;
 
+	/**
+	 * 
+	 * @author gergo0720
+	 * Types of the pieces
+	 */
 	static enum typeOfPiece {
-		DARK, LIGHT, NONE;
+		/**
+		 * Dark - Dark pieces.
+		 */
+		DARK,
+		
+		/**
+		 * Light - Light pieces.
+		 */
+		LIGHT, 
+		
+		/**
+		 * None - There is no piece.
+		 */
+		NONE;
 	}
 
+	/**
+	 * Constructor of ChessPiece, initialize base matrices.
+	 * @param fileName is the input file of names, types and positions.
+	 */
 	public ChessPiece(String fileName) {
 		setFileName(fileName);
 		for (int i = 0; i < chessPieces.length; i++) {
@@ -43,6 +95,10 @@ public class ChessPiece {
 
 	}
 
+	/**
+	 * Reading the input file and fill the matrices with the proper datas.
+	 * @param fileName is the input file.
+	 */
 	private void readXml(String fileName) {
 		try {
 			
@@ -137,11 +193,19 @@ public class ChessPiece {
 		}
 
 	}
-
+	
+	/**
+	 * Get the name of the input file.
+	 * @return the name of the input file.
+	 */
 	public static String getFileName() {
 		return filename;
 	}
 	
+	/**
+	 * Set the name of the input file.
+	 * @param s is the name of the input file.
+	 */
 	public static void setFileName(String s) {
 		ChessPiece.filename = s;
 	}
