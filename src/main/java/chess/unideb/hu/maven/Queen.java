@@ -6,26 +6,62 @@ import javax.swing.JButton;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * 
+ * @author gergo0720
+ * Class of Queen.
+ */
 public class Queen {
+	
+	/**
+	 * Logger to debug, log information and warnings.
+	 */
 	private static Logger logger = LoggerFactory.getLogger(Queen.class);
+	
+	/**
+	 * An array to contain blocks for light queen.
+	 */
 	private static boolean isDark[] = new boolean[8];
+	
+	/**
+	 * An array to contain blocks for dark queen.
+	 */
 	private static boolean isLight[] = new boolean[8];
+	
+	/**
+	 * An array to contain blocks for queen.
+	 */
 	private static boolean isOkay[] = new boolean[8];
+	
+
+	/**
+	 * The name of the piece that should be moved.
+	 */
 	private static String newPiece;
+	
+	/**
+	 * The type of the piece that should be moved.
+	 */
 	private static String newType;
+	
+	/**
+	 * The previous row position of the piece that should be moved.
+	 */
 	private static int oldPosRow;
+	
+	/**
+	 * The previous column position of the piece that should be moved.
+	 */
 	private static int oldPosCol;
-	private static int moveCounter = 0;
-	public static int getMoveCounter() {
-		return moveCounter;
-	}
 
-
-
-	public static void setMoveCounter(int moveCounter) {
-		Queen.moveCounter = moveCounter;
-	}
+	/**
+	 * 8x8 matrices that contains the possible moves of the queen.
+	 */
 	private static boolean[][] possibleMoves = new boolean[8][8];
+	
+	/**
+	 * The operators to determine the possible moves of the queen.
+	 */
 	private static Integer move[][][] = {
 			{ { 1, 1 }, { 1, 0 }, { -1, 1 }, { -1, 0 }, { -1, -1 }, { 0, -1 },
 					{ 1, -1 }, { 0, 1 } },
@@ -44,10 +80,22 @@ public class Queen {
 			{ { 8, 8 }, { 8, 0 }, { -8, 8 }, { -8, 0 }, { -8, -8 }, { 0, -8 },
 					{ 8, -8 }, { 0, 8 } } };
 
+	/**
+	 * Constructor of Queen.
+	 */
 	public Queen() {
 
 	}
 
+	/**
+	 * Examine what piece are around the queen and fill {@code possibleMoves} accordingly.
+	 * In the case of dark queen it remembers the light pieces if it finds one and so does the light queen as well with dark pieces.
+	 * If queen can see its own type of piece it will remember and set not to able move that way.
+	 * @param currPosRow is the row position of the piece before move.
+	 * @param currPosCol is the column position of the piece before move.
+	 * @param chessSquare is the matrices of the chess board
+	 * @param player is which player is active, it is need to know to determine which queen is active.
+	 */
 	static void moves(int currPosRow, int currPosCol, JButton[][] chessSquare, boolean player) {
 		inits();
 		for (int i = 0; i < chessSquare.length; i++) {
@@ -107,6 +155,12 @@ public class Queen {
 		}
 	}
 
+	/**
+	 * Grab the piece, {@code newPiece} and {@code newType} are set with the information of the piece.
+	 * Store the previous position before move.
+	 * @param i is the previous row position of the piece.
+	 * @param j is the previous column position of the piece.
+	 */
 	public static void grabPiece(int i, int j) {
 		GUIchess.drawPossibleMoves(possibleMoves, GUIchess.getChessSquare());
 		newPiece = ChessPiece.chessPieces[i][j];
@@ -115,6 +169,14 @@ public class Queen {
 		oldPosCol = ChessPiece.chessPiecesPositions[i][j][1];
 	}
 
+	/**
+	 * Place the piece to the new place.
+	 * Set the piece icons on the chess board.
+	 * Change the active player if the move was valid.
+	 * @param i is the row position where piece should be placed.
+	 * @param j is the column position where piece should be placed.
+	 * @param chessSquare is the matrices of the chess board.
+	 */
 	public static void placePiece(int i, int j, JButton[][] chessSquare) {
 		try {
 			if (possibleMoves[i][j]) {
@@ -157,6 +219,10 @@ public class Queen {
 	
 	}
 
+	/**
+	 * Initialize all the matrices and arrays.
+	 * {@code possibleMoves}, {@code possibleChess}, {@code isOkay}, {@code isDark} and {@code isLight}.
+	 */
 	private static void inits() {
 		for (int i = 0; i < possibleMoves.length; i++) {
 			for (int j = 0; j < possibleMoves.length; j++) {
@@ -175,6 +241,10 @@ public class Queen {
 
 	}
 
+	/**
+	 * Get the all the possible moves.
+	 * @return all the possible moves.
+	 */
 	public static boolean[][] getPossibleMoves() {
 		return possibleMoves;
 	}

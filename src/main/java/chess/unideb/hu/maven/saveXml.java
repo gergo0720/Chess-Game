@@ -17,16 +17,47 @@ import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-
+/**
+ * 
+ * @author gergo0720
+ * Class of saveXml
+ */
 public class saveXml {
+	/**
+	 * Logger to debug, log information and warnings.
+	 */
 	private static Logger logger = LoggerFactory.getLogger(saveXml.class);
+	
+	/**
+	 * Streamresult.
+	 */
 	private static StreamResult sr;
+	
+	/**
+	 * The name of the saved game.
+	 */
 	private static String savedFile;
+	
+	/**
+	 * The name of the folder, which contains the saved game.
+	 */
 	public static File dir;
+	
+	/**
+	 * Container for the dark pieces' name.
+	 */
 	public static Vector<String> chessPiecesDark;
+	
+	/**
+	 * Container for the light pieces' name.
+	 */
 	public static Vector<String> chessPiecesLight;
 	
-	saveXml(){
+	/**
+	 * Create an xml file with all the information of game state.
+	 * Saved it in the SavedGame folder.
+	 */
+	public saveXml(){
 		try{
 			DocumentBuilderFactory dFactory = DocumentBuilderFactory.newInstance();
 			DocumentBuilder dBuilder = dFactory.newDocumentBuilder();
@@ -98,6 +129,10 @@ public class saveXml {
 		}
 	}
 	
+	/**
+	 * Create a base.xml in SavedGames folder, which serve information.
+	 * It contains the base lineups of the pieces.
+	 */
 	public static void setBaseXml() {
 		try{
 		chessPiecesDark = new Vector<String>();
@@ -232,7 +267,11 @@ public class saveXml {
 		}
 		
 	}
-
+	
+	/**
+	 * Get the name of the saved game.
+	 * @return saved name of the game.
+	 */
 	public static String getSavedFile() {
 		return savedFile;
 	}

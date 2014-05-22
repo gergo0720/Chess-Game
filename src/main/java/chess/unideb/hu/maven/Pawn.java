@@ -8,34 +8,89 @@ import javax.swing.JButton;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * 
+ * @author gergo0720
+ * Class of Pawn.
+ */
 public class Pawn {
+	/**
+	 * Logger to debug, log information and warnings.
+	 */
 	private static Logger logger = LoggerFactory.getLogger(Pawn.class);
-	private static boolean isDark[] = new boolean[1];
-	private static boolean isLight[] = new boolean[1];
-	private static boolean isOkay[] = new boolean[1];
-	private static boolean[][] possibleMoves = new boolean[8][8];
-	private static String newPiece;
-	private static String newType;
-	private static int oldPosRow;
-	private static int oldPosCol;
-	private static int moveCounter = 0;
-	public static int getMoveCounter() {
-		return moveCounter;
-	}
-
 	
-
-	public static void setMoveCounter(int moveCounter) {
-		Pawn.moveCounter = moveCounter;
-	}
+	/**
+	 * An array to contain blocks for light pawn.
+	 */
+	private static boolean isDark[] = new boolean[1];
+	
+	/**
+	 * An array to contain blocks for dark pawn.
+	 */
+	private static boolean isLight[] = new boolean[1];
+	
+	/**
+	 * An array to contain blocks for pawn.
+	 */
+	private static boolean isOkay[] = new boolean[1];
+	
+	/**
+	 * 8x8 matrices that contains possible moves of the rook.
+	 */
+	private static boolean[][] possibleMoves = new boolean[8][8];
+	
+	/**
+	 * The name of the piece that should be moved.
+	 */
+	private static String newPiece;
+	
+	/**
+	 * The type of the piece that should be moved.
+	 */
+	private static String newType;
+	
+	/**
+	 * The previous row position of the piece that should be moved.
+	 */
+	private static int oldPosRow;
+	
+	/**
+	 * The previous column position of the piece that should be moved.
+	 */
+	private static int oldPosCol;
+	
+	/**
+	 * The operators to determine the possible moves of the dark pawn.
+	 */
 	private static Integer moveDark[][][] = { { { 1, 0 }, } };
+	
+	/**
+	 * The operators to determine the possible moves of the light pawn.
+	 */
 	private static Integer moveLight[][][] = { { { -1, 0 }, } };
+	
+	/**
+	 * 8x8 matrices that contains the places where pawn can hit an opponent piece.
+	 */
 	private static boolean[][] hitableMoves = new boolean[8][8];
 
+	
+	/**
+	 * Constructor of Pawn.
+	 */
 	public Pawn() {
 
 	}
 	
+	/**
+	 * Examine what piece are around the pawn and fill {@code possibleMoves} accordingly.
+	 * If a place is found where the pawn is able to hit an opponent piece, set the moves.
+	 * If the pawn can see its own type of piece, it will ignore.
+	 * @param currPosRow is the row position of the piece before move.
+	 * @param currPosCol is the column position of the piece before move.
+	 * @param chessSquare is the matrices of the chess board.
+	 * @param player is which player is active, it is need to know to determine which pawn is active.
+	 */
 	static void hits(int currPosRow, int currPosCol, JButton[][] chessSquare,
 			boolean player) {
 		inits();
@@ -110,7 +165,16 @@ public class Pawn {
 			}
 		}
 	}
-
+	
+	/**
+	 * Examine what piece are around the pawn and fill {@code possibleMoves} accordingly.
+	 * In the case of dark pawn it remembers the light pieces if it finds one and the so does the light pawn with dark pieces.
+	 * If pawn can see its own type of piece it will remember and set not to able move that way.
+	 * @param currPosRow is the row position of the piece before move.
+	 * @param currPosCol is the column position of the piece before move.
+	 * @param chessSquare is the matrices of the chess board
+	 * @param player is which player is active, it is need to know to determine which pawn is active.
+	 */
 	static void moves(int currPosRow, int currPosCol, JButton[][] chessSquare,
 			boolean player) {
 		inits();
@@ -289,6 +353,10 @@ public class Pawn {
 		}
 	}
 
+	/**
+	 * Initialize all the matrices and arrays.
+	 * {@code possibleMoves}, {@code possibleChess}, {@code isOkay}, {@code isDark} and {@code isLight}.
+	 */
 	private static void inits() {
 		for (int i = 0; i < possibleMoves.length; i++) {
 			for (int j = 0; j < possibleMoves.length; j++) {
@@ -312,30 +380,52 @@ public class Pawn {
 
 	}
 
+	/**
+	 * Get the all the possible moves.
+	 * @return all the possible moves.
+	 */
 	public static boolean[][] getPossibleMoves() {
 		return possibleMoves;
 	}
 	
+	/**
+	 * Get the all possible moves where pawn can hit the opponent piece.
+	 * @return all the hitable moves.
+	 */
 	public static boolean[][] getHitableMoves() {
 		return hitableMoves;
 	}
 		
+	/**
+	 * If the queen is not on the board and the pawn reach the opponent start side, the player get back his/her queen.
+	 * Both column and row position are needed to replace the pawn with queen.
+	 * @param row is the row position, if the pawn reach it, the player get back the queen.
+	 * @param col is the column position.
+	 * @param pawn is the name of the pawn.
+	 * @param chessSquare is the matrices of the chess board.
+	 */
 	public static void replacePawnWithQueen(int row, int col, String pawn, JButton[][] chessSquare) {
 		if(pawn.toLowerCase().contains("darkpawn")) {
-			if(row == 7 && !Game.isInBoard("DarkQueen", chessSquare)) {
+			if(row == 7 && !Game.isOnBoard("DarkQueen", chessSquare)) {
 				ChessPiece.chessPieces[row][col] = "DarkQueen";
 				chessSquare[row][col].setIcon(new ImageIcon(GUIchess.getDarkQueen()));
 			}
 		}
 		
 		if(pawn.toLowerCase().contains("lightpawn")) {
-			if(row == 7 && !Game.isInBoard("LightQueen", chessSquare)) {
+			if(row == 0 && !Game.isOnBoard("LightQueen", chessSquare)) {
 				ChessPiece.chessPieces[row][col] = "LightQueen";
 				chessSquare[row][col].setIcon(new ImageIcon(GUIchess.getLightQueen()));
 			}
 		}
 	}
 
+	/**
+	 * Grab the piece, {@code newPiece} and {@code newType} are set with the information of the piece.
+	 * Store the previous position before move.
+	 * @param i is the previous row position of the piece.
+	 * @param j is the previous column position of the piece.
+	 */
 	public static void grabPiece(int i, int j) {
 		GUIchess.drawPossibleMoves(possibleMoves, GUIchess.getChessSquare());
 		newPiece = ChessPiece.chessPieces[i][j];
@@ -344,6 +434,14 @@ public class Pawn {
 		oldPosCol = ChessPiece.chessPiecesPositions[i][j][1];
 	}
 
+	/**
+	 * Place the piece to the new place.
+	 * Set the piece icons on the chess board.
+	 * Change the active player if the move was valid.
+	 * @param i is the row position where piece should be placed.
+	 * @param j is the column position where piece should be placed.
+	 * @param chessSquare is the matrices of the chess board.
+	 */
 	public static void placePiece(int i, int j, JButton[][] chessSquare) {
 		try {
 			if (possibleMoves[i][j]) {
