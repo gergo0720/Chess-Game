@@ -198,12 +198,65 @@ public class GameTest {
 		Game game = new Game("/base.xml");
 		GUIchess gc = new GUIchess(game);
 		ChessPiece cp = new ChessPiece("/base.xml");
+		cp.chessPiecesPositions[4][5][0] = 4;
+		cp.chessPiecesPositions[4][5][1] = 5;
+		cp.chessPiecesPositions[0][7][0] = -1;
+		cp.chessPiecesPositions[0][7][1] = -1;
 		cp.chessPieces[4][5] = "DarkRookLeft";
 		cp.chessPieces[0][7] = "EMPTY";
+		
+		cp.chessPiecesPositions[4][3][0] = 4;
+		cp.chessPiecesPositions[4][3][1] = 3;
+		cp.chessPiecesPositions[7][4][0] = -1;
+		cp.chessPiecesPositions[7][4][1] = -1;
 		cp.chessPieces[4][3] = "LightKing";
 		cp.chessPieces[7][4] = "EMPTY";
 		boolean actual = game.kingInChess("LightKing", gc.getChessSquare());
-		boolean expected = true;
+		boolean expected = false;
+		assertEquals(expected, actual);
+	}
+	
+	public void kingInChessTest1() {
+		Game game = new Game("/base.xml");
+		GUIchess gc = new GUIchess(game);
+		ChessPiece cp = new ChessPiece("/base.xml");
+		cp.chessPiecesPositions[4][5][0] = 4;
+		cp.chessPiecesPositions[4][5][1] = 5;
+		cp.chessPiecesPositions[0][1][0] = -1;
+		cp.chessPiecesPositions[0][1][1] = -1;
+		cp.chessPieces[4][5] = "DarkRookRight";
+		cp.chessPieces[0][1] = "EMPTY";
+		
+		cp.chessPiecesPositions[4][3][0] = 4;
+		cp.chessPiecesPositions[4][3][1] = 3;
+		cp.chessPiecesPositions[7][4][0] = -1;
+		cp.chessPiecesPositions[7][4][1] = -1;
+		cp.chessPieces[4][3] = "LightKing";
+		cp.chessPieces[7][4] = "EMPTY";
+		boolean actual = game.kingInChess("LightKing", gc.getChessSquare());
+		boolean expected = false;
+		assertEquals(expected, actual);
+	}
+	
+	public void kingInChessTest3() {
+		Game game = new Game("/base.xml");
+		GUIchess gc = new GUIchess(game);
+		ChessPiece cp = new ChessPiece("/base.xml");
+		cp.chessPiecesPositions[2][5][0] = 2;
+		cp.chessPiecesPositions[2][5][1] = 5;
+		cp.chessPiecesPositions[0][7][0] = -1;
+		cp.chessPiecesPositions[0][7][1] = -1;
+		cp.chessPieces[2][5] = "DarkBishopLeft";
+		cp.chessPieces[0][5] = "EMPTY";
+		
+		cp.chessPiecesPositions[4][3][0] = 4;
+		cp.chessPiecesPositions[4][3][1] = 3;
+		cp.chessPiecesPositions[7][4][0] = -1;
+		cp.chessPiecesPositions[7][4][1] = -1;
+		cp.chessPieces[4][3] = "LightKing";
+		cp.chessPieces[7][4] = "EMPTY";
+		boolean actual = game.kingInChess("LightKing", gc.getChessSquare());
+		boolean expected = false;
 		assertEquals(expected, actual);
 	}
 	
@@ -213,7 +266,7 @@ public class GameTest {
 		GUIchess gc = new GUIchess(game);
 		game.setPlayer(false);
 		boolean actual = game.kingInChess("DarkKing", gc.getChessSquare());
-		boolean expected = false;
+		boolean expected = true;
 		assertEquals(expected, actual);
 	}
 
