@@ -379,7 +379,7 @@ public class GUIchess extends JFrame implements MouseListener, ActionListener {
 		logoPanel.add(logo);
 
 		try {
-			img = ImageIO.read(getClass().getResource(File.separator+"chesslogo.png"));
+			img = ImageIO.read(getClass().getResource("/chesslogo.png"));
 			logo.setIcon(new ImageIcon(img));
 		} catch (Exception e) {
 			logger.error("Failed to load logo!");
