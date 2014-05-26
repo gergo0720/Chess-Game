@@ -9,47 +9,58 @@ import org.slf4j.LoggerFactory;
 /**
  * 
  * @author gergo0720
- * Class of Rook
+ * Class of the {@code Rook}. It has a {@link #moves} method, which sets up a 8x8 matrices with true value.
+ * This matrices {@link #move} shows that positions on the chess board where the piece can move.
  */
 public class Rook {
 	
 	/**
-	 * Logger to debug, log information and  warnings.
+	 * Logger to debug, log information and warnings.
+	 * Log information about the {@link #Rook}'s possible moves.
 	 */
 	private static Logger logger = LoggerFactory.getLogger(Rook.class);
 	
 	/**
 	 * An array to contain blocks for light rook.
+	 * It has a true value at a certain position where {@link #moves} found a dark piece
+	 * in the case of light rook.
 	 */
 	private static boolean[] isOkay = new boolean[4];
 	
 	/**
 	 * An array to contain blocks for dark rook.
+	 * It has a true value at a certain position where {@link #moves} found a light piece
+	 * in the case of dark rook.
 	 */
 	private static boolean[] isLight = new boolean[4];
 	
 	/**
 	 * An array to contain blocks for rook.
+	 * It has a false value at a certain position where {@link #moves} found an own type of piece.
 	 */
 	private static boolean[] isDark = new boolean[4];
 	
 	/**
 	 * The name of the piece that should be moved.
+	 * Used in {@link #grabPiece(int, int)} to know which piece we need to move.
 	 */
 	private static String newPiece;
 	
 	/**
 	 * The type of the piece that should be moved.
+	 * Used in {@link #grabPiece(int, int)} to know which piece we need to move.
 	 */
 	private static String newType;
 	
 	/**
 	 * The previous row position of the piece that should be moved.
+	 * Used in {@link #placePiece(int, int, JButton[][])} to know which square on the board need to be set null.
 	 */
 	private static int oldPosRow;
 	
 	/**
 	 * The previous column position of the piece that should be moved.
+	 * Used in {@link #placePiece(int, int, JButton[][])} to know which square on the board need to be set null.
 	 */
 	private static int oldPosCol;
 	
@@ -75,6 +86,8 @@ public class Rook {
 
 	/**
 	 * Get the number of taken moves of dark-left rook.
+	 * Used to determine rampart is available or not.
+	 * If it is 1 rampart is available.
 	 * @return taken moves.
 	 */
 	public static int getMoveCounterDarkLeft() {
@@ -83,6 +96,8 @@ public class Rook {
 
 	/**
 	 * Get the number of taken moves of dark-right rook.
+	 * Used to determine rampart is available or not.
+	 * If it is 1 rampart is available.
 	 * @return taken moves.
 	 */
 	public static int getMoveCounterDarkRight() {
@@ -91,6 +106,8 @@ public class Rook {
 
 	/**
 	 * Get the number of taken moves of light-left rook.
+	 * Used to determine rampart is available or not.
+	 * If it is 1 rampart is available.
 	 * @return taken moves.
 	 */
 	public static int getMoveCounterLightLeft() {
@@ -99,6 +116,8 @@ public class Rook {
 
 	/**
 	 * Get the number of taken moves of light-right rook.
+	 * Used to determine rampart is available or not.
+	 * If it is 1 rampart is available.
 	 * @return taken moves.
 	 */
 	public static int getMoveCounterLightRight() {
@@ -106,12 +125,13 @@ public class Rook {
 	}
 	
 	/**
-	 * 8x8 matrices that contains the possible moves of the rook.
+	 * 8x8 matrices that has true values at certain positions where the piece can move on.
 	 */
 	private static boolean[][] possibleMoves = new boolean[8][8];
 	
 	/**
 	 * The operators to determine the possible moves of the rook.
+	 * Used in {@link #moves(int, int, JButton[][], boolean)} to add this coordinates to the current position.
 	 */
 	private static Integer move[][][] = 
 	{
@@ -174,7 +194,7 @@ public class Rook {
 	
 	
 	/**
-	 * Examine what piece are around the rook and fill {@code possibleMoves} accordingly.
+	 * Examine what piece are around the rook and fill {@link #possibleMoves} accordingly.
 	 * In the case of dark rook it remembers the light pieces if it finds one and so does the light rook as well with dark pieces.
 	 * If rook can see its own type of piece it will remember and set not to able move that way.
 	 * @param currPosRow is the row position of the piece before move.

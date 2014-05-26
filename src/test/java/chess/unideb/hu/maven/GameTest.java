@@ -103,6 +103,7 @@ public class GameTest {
 		cp.chessPieces[4][5] = "DarkKing";
 		cp.chessPieces[0][4] = "EMPTY";
 		GUIchess g = new GUIchess(game);
+		g.setVisible(false);
 		boolean actual = game.kingVisible(pM, g.getChessSquare(), "DarkKing");
 		boolean expected = true;
 		assertEquals(expected, actual);

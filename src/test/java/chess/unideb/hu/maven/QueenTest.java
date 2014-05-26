@@ -31,8 +31,6 @@ public class QueenTest {
 		expected[3][2] = true;
 		expected[2][3] = true;
 		expected[1][4] = true;
-		expected[3][1] = true;
-		expected[4][2] = true;
 		
 		assertEquals(expected, actual);
 	}

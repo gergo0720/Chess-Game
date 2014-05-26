@@ -9,57 +9,69 @@ import org.slf4j.LoggerFactory;
 /**
  * 
  * @author gergo0720
- * Class of Bishop
+ * Class of the {@code Bishop}. It has a {@link #moves} method, which sets up a 8x8 matrices with true value.
+ * This matrices {@link #move} shows that positions on the chess board where the piece can move.
  */
 public class Bishop {
 	
 	/**
 	 * Logger to debug, log information and warnings.
+	 * Log information about the {@link #Bishop}'s possible moves.
 	 */
 	private static Logger logger = LoggerFactory.getLogger(Bishop.class);
 	
 	/**
 	 * An array to contain blocks for light bishop.
+	 * It has a true value at a certain position where {@link #moves} found a dark piece
+	 * in the case of light bishop.
 	 */
 	private static boolean[] isDark = new boolean[4];
 	
 	/**
 	 * An array to contain blocks for dark bishop.
+	 * It has a true value at a certain position where {@link #moves} found a light piece
+	 * in the case of dark bishop.
 	 */
 	private static boolean[] isLight = new boolean[4];
 	
 	/**
 	 * An array to contain blocks bishop.
+	 * It has a false value at a certain position where {@link #moves} found an own type of piece.
 	 */
 	private static boolean[] isOkay = new boolean[4];
 	
 	/**
 	 * The name of the piece that should be moved.
+	 * Used in {@link #grabPiece(int, int)} to know which piece we need to move.
 	 */
 	private static String newPiece;
 	
 	/**
 	 * The type of the piece that should be moved.
+	 * Used in {@link #grabPiece(int, int)} to know which piece we need to move.
 	 */
 	private static String newType;
 	
 	/**
 	 * The previous row position of the piece that should be moved.
+	 * Used in {@link #placePiece(int, int, JButton[][])} to know which square on the board need to be set null.
 	 */
 	private static int oldPosRow;
 	
 	/**
 	 * The previous column position of the piece that should be moved.
+	 * Used in {@link #placePiece(int, int, JButton[][])} to know which square on the board need to be set null.
 	 */
 	private static int oldPosCol;
 	
 	/**
-	 * 8x8 matrices that contains the possible moves of the bishop.
+	 * 8x8 matrices that has true values at certain positions where the piece can move on.
 	 */
 	private static boolean[][] possibleMoves = new boolean[8][8];
 	
 	/**
 	 * The operators to determine the possible moves of the bishop.
+	 * Used in {@link #moves(int, int, JButton[][], boolean)} to add this coordinates to the current position.
 	 */
 	private static Integer move[][][] = 
 	{
@@ -121,7 +133,7 @@ public class Bishop {
 	}
 	
 	/**
-	 * Examine what piece are around the bishop and fill {@code possibleMoves} accordingly.
+	 * Examine what piece are around the bishop and fill and fill {@link #possibleMoves} accordingly.
 	 * In the case of dark bishop it remembers the light pieces if it finds one and so does the light bishop as well with dark pieces.
 	 * If bishop can see its own type of piece it will remember and set not to able move that way.
 	 * @param currPosRow is the row position of the piece before move.

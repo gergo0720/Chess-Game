@@ -11,61 +11,74 @@ import org.slf4j.LoggerFactory;
 /**
  * 
  * @author gergo0720
- * Class of Pawn.
+ * Class of the {@code Pawn}. It has a {@link #moves} method, which sets up a 8x8 matrices with true value.
+ * These matrices {@link #moveLight} and {@link #moveDark} show that positions on the chess board where the piece can move.
  */
 public class Pawn {
 	/**
 	 * Logger to debug, log information and warnings.
+	 * Log information about the {@link Pawn}'s possible moves.
 	 */
 	private static Logger logger = LoggerFactory.getLogger(Pawn.class);
 	
 	/**
 	 * An array to contain blocks for light pawn.
+	 * It has a true value at a certain position where {@link #moves} found a dark piece
+	 * in the case of light pawn.
 	 */
 	private static boolean isDark[] = new boolean[1];
 	
 	/**
 	 * An array to contain blocks for dark pawn.
+	 * It has a true value at a certain position where {@link #moves} found a light piece
+	 * in the case of dark pawn.
 	 */
 	private static boolean isLight[] = new boolean[1];
 	
 	/**
 	 * An array to contain blocks for pawn.
+	 * It has a false value at a certain position where {@link #moves} found an own type of piece.
 	 */
 	private static boolean isOkay[] = new boolean[1];
 	
 	/**
-	 * 8x8 matrices that contains possible moves of the rook.
+	 * 8x8 matrices that has true values at certain positions where the piece can move on.
 	 */
 	private static boolean[][] possibleMoves = new boolean[8][8];
 	
 	/**
 	 * The name of the piece that should be moved.
+	 * Used in {@link #grabPiece(int, int)} to know which piece we need to move.
 	 */
 	private static String newPiece;
 	
 	/**
 	 * The type of the piece that should be moved.
+	 * Used in {@link #grabPiece(int, int)} to know which piece we need to move.
 	 */
 	private static String newType;
 	
 	/**
 	 * The previous row position of the piece that should be moved.
+	 * Used in {@link #placePiece(int, int, JButton[][])} to know which square on the board need to be set null.
 	 */
 	private static int oldPosRow;
 	
 	/**
 	 * The previous column position of the piece that should be moved.
+	 * Used in {@link #placePiece(int, int, JButton[][])} to know which square on the board need to be set null.
 	 */
 	private static int oldPosCol;
 	
 	/**
 	 * The operators to determine the possible moves of the dark pawn.
+	 * Used in {@link #moves(int, int, JButton[][], boolean)} to add this coordinates to the current position.
 	 */
 	private static Integer moveDark[][][] = { { { 1, 0 }, } };
 	
 	/**
 	 * The operators to determine the possible moves of the light pawn.
+	 * Used in {@link #moves(int, int, JButton[][], boolean)} to add this coordinates to the current position.
 	 */
 	private static Integer moveLight[][][] = { { { -1, 0 }, } };
 	
@@ -83,7 +96,7 @@ public class Pawn {
 	}
 	
 	/**
-	 * Examine what piece are around the pawn and fill {@code possibleMoves} accordingly.
+	 * Examine what piece are around the pawn and fill {@link #possibleMoves} accordingly.
 	 * If a place is found where the pawn is able to hit an opponent piece, set the moves.
 	 * If the pawn can see its own type of piece, it will ignore.
 	 * @param currPosRow is the row position of the piece before move.

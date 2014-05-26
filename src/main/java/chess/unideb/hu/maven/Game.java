@@ -208,7 +208,6 @@ public class Game {
 		if(kingDistance(getPosRow("LightKing"), getPosCol("LightKing"), getPosRow("DarkKing"), getPosCol("DarkKing")) == 1) {
 			chessSituation();
 		}
-		
 		King.chess(getPosRow("LightKing"), getPosCol("LightKing"), chessSquare, true);
 		isChess(King.getPossibleChess(), chessSquare, "LightKing");
 		King.chess(getPosRow("DarkKing"), getPosCol("DarkKing"), chessSquare, false);
